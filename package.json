@@ -1,0 +1,14 @@
+{
+  "name": "zoo-logo",
+  "version": "1.0.0",
+  "description": "Zoo logo icon generator",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "sharp": "^0.34.4"
+  },
+  "private": true
+}
