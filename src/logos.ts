@@ -102,6 +102,37 @@ export function getWhiteSVG(): string {
 }
 
 /**
+ * Generate monochrome SVG for menu bar (tightly cropped)
+ */
+export function getMenuBarSVG(): string {
+  const c = LOGO_SETTINGS.color;
+  const m = LOGO_SETTINGS.mono;
+
+  // Calculate tight bounding box around the circles
+  const minX = Math.min(c.redX, c.greenX, c.blueX) - c.circleRadius - m.strokeWidth;
+  const maxX = Math.max(c.redX, c.greenX, c.blueX) + c.circleRadius + m.strokeWidth;
+  const minY = Math.min(c.greenY, c.redY, c.blueY) - c.circleRadius - m.strokeWidth;
+  const maxY = Math.max(c.greenY, c.redY, c.blueY) + c.circleRadius + m.strokeWidth;
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+
+  return `<svg viewBox="${minX} ${minY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="outerCircleMenu">
+        <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius}"></circle>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#outerCircleMenu)">
+      <circle cx="${c.greenX}" cy="${c.greenY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
+      <circle cx="${c.redX}" cy="${c.redY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
+      <circle cx="${c.blueX}" cy="${c.blueY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
+      <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius - m.outerStrokeWidth/2}" fill="none" stroke="black" stroke-width="${m.outerStrokeWidth}"></circle>
+    </g>
+  </svg>`;
+}
+
+/**
  * Get logo as data URL
  */
 export function getLogoDataUrl(options: LogoOptions = {}): string {

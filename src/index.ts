@@ -5,6 +5,4 @@
  */
 
 export * from './logos';
-export * from './react';
 export * from './types';
-export { generateIcon, generateAllIcons } from './generator';

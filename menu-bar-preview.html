@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoo Logo Menu Bar Preview</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+        h1 { font-size: 24px; }
+        h2 { font-size: 18px; color: #aaa; }
+
+        /* Mac Menu Bar Mockup */
+        .menu-bar {
+            background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
+            border: 1px solid #1a1a1a;
+            border-radius: 6px 6px 0 0;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .menu-bar.light {
+            background: linear-gradient(180deg, #f6f6f6 0%, #e8e8e8 100%);
+            border-color: #d0d0d0;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            height: 100%;
+        }
+
+        .menu-icon {
+            height: 16px;
+            width: auto;
+            opacity: 0.9;
+            display: block;
+        }
+
+        .menu-bar.light .menu-icon {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+
+        .preview-section {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .controls {
+            background: #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        label {
+            display: inline-block;
+            width: 150px;
+            margin-bottom: 10px;
+        }
+
+        input[type="range"] {
+            width: 300px;
+            vertical-align: middle;
+        }
+
+        .value {
+            display: inline-block;
+            width: 50px;
+            text-align: center;
+            color: #00ff00;
+            font-family: monospace;
+        }
+
+        .button-group {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background: #4a4a4a;
+            color: white;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #5a5a5a;
+        }
+
+        .svg-display {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        #monoSVG {
+            max-width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zoo Logo Menu Bar Preview</h1>
+    <h2>See how the monochrome logo looks in the Mac menu bar</h2>
+
+    <div class="preview-section">
+        <h3>Dark Menu Bar</h3>
+        <div class="menu-bar">
+            <div class="menu-items">
+                <!-- System icons -->
+                <svg class="menu-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M11.5 2.5v11l-3.5-2-3.5 2v-11a1 1 0 011-1h5a1 1 0 011 1z"/>
+                </svg>
+                <svg class="menu-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M3 7h10v2H3z M6 3h4v10H6z"/>
+                </svg>
+                <!-- Our Zoo icon -->
+                <svg id="menuIconDark" class="menu-icon" viewBox="98 102 812 820"></svg>
+                <!-- More system icons -->
+                <svg class="menu-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <circle cx="8" cy="8" r="1.5"/>
+                    <path d="M8 3v2m0 6v2m3.5-7.5l-1.5 1.5m-4 4l-1.5 1.5m7-3.5h-2m-6 0h-2m7.5-3.5l-1.5-1.5m-4-4l-1.5-1.5"/>
+                </svg>
+            </div>
+        </div>
+
+        <h3>Light Menu Bar</h3>
+        <div class="menu-bar light">
+            <div class="menu-items">
+                <!-- System icons -->
+                <svg class="menu-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M11.5 2.5v11l-3.5-2-3.5 2v-11a1 1 0 011-1h5a1 1 0 011 1z"/>
+                </svg>
+                <svg class="menu-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M3 7h10v2H3z M6 3h4v10H6z"/>
+                </svg>
+                <!-- Our Zoo icon -->
+                <svg id="menuIconLight" class="menu-icon" viewBox="98 102 812 820"></svg>
+                <!-- More system icons -->
+                <svg class="menu-icon" viewBox="0 0 16 16" fill="currentColor">
+                    <circle cx="8" cy="8" r="1.5"/>
+                    <path d="M8 3v2m0 6v2m3.5-7.5l-1.5 1.5m-4 4l-1.5 1.5m7-3.5h-2m-6 0h-2m7.5-3.5l-1.5-1.5m-4-4l-1.5-1.5"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <h3>Adjust Monochrome Settings</h3>
+        <div>
+            <label>Stroke Width:</label>
+            <input type="range" id="strokeWidth" min="10" max="60" value="33">
+            <span class="value" id="strokeWidthVal">33</span>
+        </div>
+        <div>
+            <label>Outer Stroke:</label>
+            <input type="range" id="outerStrokeWidth" min="10" max="60" value="36">
+            <span class="value" id="outerStrokeWidthVal">36</span>
+        </div>
+        <div class="button-group">
+            <button onclick="resetDefaults()">Reset to Defaults</button>
+            <button onclick="exportSVG()">Export SVG</button>
+        </div>
+    </div>
+
+    <div class="preview-section">
+        <h3>Generated SVG</h3>
+        <div class="svg-display">
+            <svg id="monoSVG" viewBox="0 0 1024 1024"></svg>
+        </div>
+    </div>
+
+    <script>
+        const defaultValues = {
+            strokeWidth: 33,
+            outerStrokeWidth: 36
+        };
+
+        function generateMonoSVG() {
+            const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+            const outerStrokeWidth = parseInt(document.getElementById('outerStrokeWidth').value);
+
+            // Calculate tight bounds for menu bar version
+            const minX = 365 - 234 - strokeWidth;
+            const maxX = 643 + 234 + strokeWidth;
+            const minY = 369 - 234 - strokeWidth;
+            const maxY = 595 + 234 + strokeWidth;
+
+            const svg = `
+                <defs>
+                    <clipPath id="outerCircleMono">
+                        <circle cx="508" cy="511" r="270"/>
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#outerCircleMono)">
+                    <circle cx="513" cy="369" r="234" fill="none" stroke="currentColor" stroke-width="${strokeWidth}"/>
+                    <circle cx="365" cy="595" r="234" fill="none" stroke="currentColor" stroke-width="${strokeWidth}"/>
+                    <circle cx="643" cy="595" r="234" fill="none" stroke="currentColor" stroke-width="${strokeWidth}"/>
+                    <circle cx="508" cy="511" r="252" fill="none" stroke="currentColor" stroke-width="${outerStrokeWidth}"/>
+                </g>
+            `;
+
+            // Update main display
+            document.getElementById('monoSVG').innerHTML = svg;
+
+            // Update menu bar icons (tightly cropped)
+            const menuSvg = `
+                <defs>
+                    <clipPath id="outerCircleMenu">
+                        <circle cx="508" cy="511" r="270"/>
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#outerCircleMenu)">
+                    <circle cx="513" cy="369" r="234" fill="none" stroke="white" stroke-width="${strokeWidth}"/>
+                    <circle cx="365" cy="595" r="234" fill="none" stroke="white" stroke-width="${strokeWidth}"/>
+                    <circle cx="643" cy="595" r="234" fill="none" stroke="white" stroke-width="${strokeWidth}"/>
+                    <circle cx="508" cy="511" r="252" fill="none" stroke="white" stroke-width="${outerStrokeWidth}"/>
+                </g>
+            `;
+
+            document.getElementById('menuIconDark').innerHTML = menuSvg;
+            document.getElementById('menuIconLight').innerHTML = menuSvg;
+        }
+
+        function updateValue(id) {
+            const elem = document.getElementById(id);
+            const valElem = document.getElementById(id + 'Val');
+            if (elem && valElem) {
+                valElem.textContent = elem.value;
+            }
+            generateMonoSVG();
+        }
+
+        function resetDefaults() {
+            Object.keys(defaultValues).forEach(key => {
+                const elem = document.getElementById(key);
+                if (elem) {
+                    elem.value = defaultValues[key];
+                    updateValue(key);
+                }
+            });
+        }
+
+        function exportSVG() {
+            const strokeWidth = parseInt(document.getElementById('strokeWidth').value);
+            const outerStrokeWidth = parseInt(document.getElementById('outerStrokeWidth').value);
+
+            const svg = `<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <clipPath id="outerCircleMono">
+            <circle cx="508" cy="511" r="270"/>
+        </clipPath>
+    </defs>
+    <g clip-path="url(#outerCircleMono)">
+        <circle cx="513" cy="369" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+        <circle cx="365" cy="595" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+        <circle cx="643" cy="595" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+        <circle cx="508" cy="511" r="252" fill="none" stroke="black" stroke-width="${outerStrokeWidth}"/>
+    </g>
+</svg>`;
+
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'zoo-logo-mono.svg';
+            a.click();
+        }
+
+        // Event listeners
+        document.getElementById('strokeWidth').addEventListener('input', () => updateValue('strokeWidth'));
+        document.getElementById('outerStrokeWidth').addEventListener('input', () => updateValue('outerStrokeWidth'));
+
+        // Initialize
+        resetDefaults();
+    </script>
+</body>
+</html>
