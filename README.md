@@ -5,8 +5,6 @@
 
   Official Zoo logo package providing TypeScript/React components and utilities for consistent branding across the Zoo ecosystem.
 
-  **Ethereum Address:** `0xbDdBAf651595EB592Ea899C11D48a2f1195Cf3bc`
-
   [![npm version](https://img.shields.io/npm/v/@zooai/logo)](https://www.npmjs.com/package/@zooai/logo)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
