@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/zoo-logo.svg" alt="Zoo Logo" width="256" height="256">
+  <img src="docs/assets/zoo-logo-cropped.svg" alt="Zoo Logo" width="256" height="256">
 
   # @zooai/logo
 
@@ -10,6 +10,60 @@
   [![npm version](https://img.shields.io/npm/v/@zooai/logo)](https://www.npmjs.com/package/@zooai/logo)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+</div>
+
+## Logo Showcase
+
+<div align="center">
+  <table>
+    <tr>
+      <th colspan="5">Color Logo - Multiple Sizes</th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="docs/assets/logo-32.png" width="32" height="32" alt="32px"><br>
+        <sub>32×32</sub>
+      </td>
+      <td align="center">
+        <img src="docs/assets/logo-64.png" width="64" height="64" alt="64px"><br>
+        <sub>64×64</sub>
+      </td>
+      <td align="center">
+        <img src="docs/assets/logo-128.png" width="128" height="128" alt="128px"><br>
+        <sub>128×128</sub>
+      </td>
+      <td align="center">
+        <img src="docs/assets/logo-256.png" width="256" height="256" alt="256px"><br>
+        <sub>256×256</sub>
+      </td>
+      <td align="center">
+        <img src="docs/assets/logo-512.png" width="512" height="512" alt="512px"><br>
+        <sub>512×512</sub>
+      </td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <th>macOS Dock Icon</th>
+      <th>Monochrome</th>
+      <th>Menu Bar Icon</th>
+    </tr>
+    <tr>
+      <td align="center">
+        <img src="docs/assets/logo-macos-dock.png" width="128" height="128" alt="macOS Dock"><br>
+        <sub>Rounded corners + black background</sub>
+      </td>
+      <td align="center">
+        <img src="docs/assets/logo-mono-128.png" width="128" height="128" alt="Monochrome"><br>
+        <sub>For single color displays</sub>
+      </td>
+      <td align="center">
+        <img src="docs/assets/logo-menubar-32.png" width="32" height="32" alt="Menu Bar"><br>
+        <sub>Optimized for menu bars</sub>
+      </td>
+    </tr>
+  </table>
 </div>
 
 ## Features
@@ -30,75 +84,132 @@ yarn add @zooai/logo
 pnpm add @zooai/logo
 ```
 
-## Usage
+## Usage Examples
 
-### React Components
+### 🎨 Standard Color Logo
 
 ```tsx
-import { ZooLogo, ZooFavicon } from '@zooai/logo/react';
+import { ZooLogo } from '@zooai/logo/react';
+import { getColorSVG, getColorSVGCropped } from '@zooai/logo';
 
-// Basic usage
-<ZooLogo size={64} />
+// React component - auto sizing
+<ZooLogo size={128} />
 
-// Monochrome variant for menu bars
-<ZooLogo variant="mono" size={32} />
+// Get tightly cropped version (no extra padding)
+const croppedSVG = getColorSVGCropped();
 
-// White variant for dark backgrounds
-<ZooLogo variant="white" className="w-16 h-16" />
+// Use in various sizes
+<ZooLogo size={32} />   // Favicon size
+<ZooLogo size={64} />   // Small icon
+<ZooLogo size={128} />  // Standard icon
+<ZooLogo size={256} />  // Large display
+```
 
-// Add favicon to your app
+### 🖥️ macOS Dock Icon
+
+```tsx
+import { generateIcon } from '@zooai/logo';
+import { getColorSVGCropped } from '@zooai/logo';
+
+// Generate macOS dock icon with black rounded background
+const svgString = getColorSVGCropped();
+await generateIcon(svgString, 'dock-icon.png', 512, true); // true = add background
+
+// The icon will have:
+// - Rounded corners (22% radius)
+// - Black background
+// - 80% logo size with 10% padding on each side
+```
+
+### 📊 Menu Bar Icon
+
+```tsx
+import { ZooLogo } from '@zooai/logo/react';
+import { getMenuBarSVG } from '@zooai/logo';
+
+// React component for menu bar
+<ZooLogo variant="mono" size={16} />  // macOS menu bar
+<ZooLogo variant="mono" size={24} />  // @1.5x
+<ZooLogo variant="mono" size={32} />  // @2x
+
+// Get tightly cropped menu bar SVG
+const menuBarSVG = getMenuBarSVG();
+// This version is optimized for small sizes with thicker strokes
+```
+
+### ⚫ Monochrome Variants
+
+```tsx
+import { ZooLogo } from '@zooai/logo/react';
+import { getMonoSVG, getWhiteSVG } from '@zooai/logo';
+
+// Black outline (for light backgrounds)
+<ZooLogo variant="mono" size={128} />
+const monoSVG = getMonoSVG();
+
+// White outline (for dark backgrounds)
+<ZooLogo variant="white" size={128} />
+const whiteSVG = getWhiteSVG();
+```
+
+### 📦 Batch Icon Generation
+
+```ts
+import { generateIcon, getColorSVGCropped, getMonoSVG } from '@zooai/logo';
+
+// Generate all app icons
+const sizes = [16, 32, 64, 128, 256, 512, 1024];
+const colorSVG = getColorSVGCropped();
+
+for (const size of sizes) {
+  // Regular icons
+  await generateIcon(colorSVG, `icon-${size}.png`, size);
+
+  // macOS dock icons (128px and up get background)
+  if (size >= 128) {
+    await generateIcon(colorSVG, `icon-macos-${size}.png`, size, true);
+  }
+}
+
+// Generate menu bar icons
+const menuBarSVG = getMenuBarSVG();
+await generateIcon(menuBarSVG, 'menubar-16.png', 16);
+await generateIcon(menuBarSVG, 'menubar-32.png', 32);
+```
+
+### 🌐 Web Favicon
+
+```tsx
+import { ZooFavicon } from '@zooai/logo/react';
+import { zooLogoDataUrl } from '@zooai/logo';
+
+// React component (adds to document head)
 <ZooFavicon />
-```
 
-### Raw SVG Strings
-
-```ts
-import { zooLogo, zooLogoMono, zooLogoWhite } from '@zooai/logo';
-
-// Use in HTML
-document.getElementById('logo').innerHTML = zooLogo;
-
-// Use as CSS background
-element.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(zooLogo)}")`;
-```
-
-### Data URLs
-
-```ts
-import { zooLogoDataUrl, zooLogoMonoDataUrl } from '@zooai/logo';
-
-// Use in img tag
-<img src={zooLogoDataUrl} alt="Zoo" />
-
-// Use as favicon
+// Manual favicon
 <link rel="icon" href={zooLogoDataUrl} />
+<link rel="icon" type="image/svg+xml" href="/logo.svg" />
+<link rel="apple-touch-icon" href="/logo-180.png" />
 ```
 
-### Flexible API
+### 🎯 Data URLs and Base64
 
 ```ts
-import { getLogo } from '@zooai/logo';
+import { getLogoDataUrl, getLogoBase64 } from '@zooai/logo';
 
-// Get SVG string
-const svg = getLogo({ variant: 'color' });
+// Get as data URL (ready to use in img src)
+const dataUrl = getLogoDataUrl({ variant: 'color' });
+const monoDataUrl = getLogoDataUrl({ variant: 'mono' });
 
-// Get data URL
-const dataUrl = getLogo({ variant: 'mono', format: 'dataUrl' });
+// Get as base64 (for APIs that need base64)
+const base64 = getLogoBase64({ variant: 'color' });
 
-// Get base64
-const base64 = getLogo({ variant: 'white', format: 'base64' });
-```
-
-### Generate PNG Icons
-
-```ts
-import { generateIcon, generateAllIcons } from '@zooai/logo';
-
-// Generate single icon
-await generateIcon(svgString, 'icon.png', 128);
-
-// Generate all standard sizes
-await generateAllIcons('dist/icons');
+// Use in CSS
+const style = {
+  backgroundImage: `url(${dataUrl})`,
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat'
+};
 ```
 
 ## Building Icons

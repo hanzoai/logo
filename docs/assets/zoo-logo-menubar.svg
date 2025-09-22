@@ -1,0 +1,13 @@
+<svg viewBox="98 102 812 760" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="outerCircleMenu">
+        <circle cx="508" cy="510" r="283"></circle>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#outerCircleMenu)">
+      <circle cx="513" cy="369" r="234" fill="none" stroke="black" stroke-width="33"></circle>
+      <circle cx="365" cy="595" r="234" fill="none" stroke="black" stroke-width="33"></circle>
+      <circle cx="643" cy="595" r="234" fill="none" stroke="black" stroke-width="33"></circle>
+      <circle cx="508" cy="510" r="265" fill="none" stroke="black" stroke-width="36"></circle>
+    </g>
+  </svg>
