@@ -5,9 +5,10 @@
  * Generates all required icons for Zoo ecosystem
  */
 
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
+import * as fs from 'fs';
+import * as path from 'path';
+import { execSync } from 'child_process';
+import sharp from 'sharp';
 
 // Final perfect logo settings
 const LOGO_SETTINGS = {
@@ -32,7 +33,7 @@ const LOGO_SETTINGS = {
     }
 };
 
-function generateColorSVG() {
+function generateColorSVG(): string {
     const s = LOGO_SETTINGS.color;
     return `<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -77,42 +78,110 @@ function generateColorSVG() {
     </svg>`;
 }
 
-function generateMonoSVG() {
-    const c = LOGO_SETTINGS.color;
-    const m = LOGO_SETTINGS.mono;
+function generateMonoSVG(): string {
+    // Thicker strokes for menu bar visibility
+    const strokeWidth = 33;
+    const outerStrokeWidth = 36;
+
     return `<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
         <defs>
             <clipPath id="outerCircleMono">
-                <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius}"></circle>
+                <circle cx="508" cy="511" r="270"/>
             </clipPath>
         </defs>
         <g clip-path="url(#outerCircleMono)">
-            <circle cx="${c.greenX}" cy="${c.greenY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-            <circle cx="${c.redX}" cy="${c.redY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-            <circle cx="${c.blueX}" cy="${c.blueY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-            <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius - m.outerStrokeWidth/2}" fill="none" stroke="black" stroke-width="${m.outerStrokeWidth}"></circle>
+            <circle cx="513" cy="369" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+            <circle cx="365" cy="595" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+            <circle cx="643" cy="595" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+            <circle cx="508" cy="511" r="252" fill="none" stroke="black" stroke-width="${outerStrokeWidth}"/>
         </g>
     </svg>`;
 }
 
-async function generateIcon(svgString, outputPath, size) {
+function generateMenuBarSVG(): string {
+    // Tightly cropped version for menu bar - uses 100% of height
+    const strokeWidth = 33;
+    const outerStrokeWidth = 36;
+
+    // Calculate tight bounds
+    const minX = 365 - 234 - strokeWidth;
+    const maxX = 643 + 234 + strokeWidth;
+    const minY = 369 - 234 - strokeWidth;
+    const maxY = 595 + 234 + strokeWidth;
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    return `<svg viewBox="${minX} ${minY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <clipPath id="outerCircleMenu">
+                <circle cx="508" cy="511" r="270"/>
+            </clipPath>
+        </defs>
+        <g clip-path="url(#outerCircleMenu)">
+            <circle cx="513" cy="369" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+            <circle cx="365" cy="595" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+            <circle cx="643" cy="595" r="234" fill="none" stroke="black" stroke-width="${strokeWidth}"/>
+            <circle cx="508" cy="511" r="252" fill="none" stroke="black" stroke-width="${outerStrokeWidth}"/>
+        </g>
+    </svg>`;
+}
+
+async function generateIcon(svgString: string, outputPath: string, size: number, addBackground = false): Promise<void> {
     const dir = path.dirname(outputPath);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
 
-    await sharp(Buffer.from(svgString))
-        .resize(size, size)
-        .png()
-        .toFile(outputPath);
+    if (addBackground) {
+        // For dock icons, add rounded square black background
+        const logoSize = Math.floor(size * 0.8);
+        const padding = Math.floor((size - logoSize) / 2);
+        const cornerRadius = Math.floor(size * 0.22); // macOS-style corner radius
+
+        const bgSvg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+            <rect x="0" y="0" width="${size}" height="${size}" rx="${cornerRadius}" ry="${cornerRadius}" fill="black"/>
+        </svg>`;
+
+        // Create background layer
+        const bg = await sharp(Buffer.from(bgSvg)).png().toBuffer();
+
+        // Create logo layer (removing the black gradient background)
+        const cleanSvg = svgString.replace(/<rect[^>]*fill="url\(#blackGradient\)"[^>]*\/>/g, '');
+        const logo = await sharp(Buffer.from(cleanSvg))
+            .resize(logoSize, logoSize)
+            .png()
+            .toBuffer();
+
+        // Composite them together
+        await sharp(bg)
+            .composite([{
+                input: logo,
+                top: padding,
+                left: padding
+            }])
+            .toFile(outputPath);
+    } else {
+        await sharp(Buffer.from(svgString))
+            .resize(size, size)
+            .png()
+            .toFile(outputPath);
+    }
     console.log(`✓ ${path.relative(process.cwd(), outputPath)} (${size}×${size})`);
 }
 
-async function buildAll() {
+interface IconConfig {
+    name: string;
+    size: number;
+    svg?: string;
+}
+
+async function buildAll(): Promise<void> {
     console.log('🎨 Zoo Logo Builder\n');
 
     const colorSVG = generateColorSVG();
     const monoSVG = generateMonoSVG();
+    const menuBarSVG = generateMenuBarSVG();
 
     // Ensure dist directory exists
     if (!fs.existsSync('dist')) {
@@ -122,6 +191,7 @@ async function buildAll() {
     // Save SVG sources
     fs.writeFileSync('dist/zoo-logo.svg', colorSVG);
     fs.writeFileSync('dist/zoo-logo-mono.svg', monoSVG);
+    fs.writeFileSync('dist/zoo-logo-menubar.svg', menuBarSVG);
     console.log('✓ Generated SVG sources\n');
 
     // Generate icons for zoo/app
@@ -130,7 +200,7 @@ async function buildAll() {
         console.log('Generating Tauri app icons:');
 
         // Standard macOS app icons
-        const appIcons = [
+        const appIcons: IconConfig[] = [
             { name: 'icon_16x16.png', size: 16 },
             { name: '16x16.png', size: 16 },
             { name: 'icon_16x16@2x.png', size: 32 },
@@ -149,11 +219,13 @@ async function buildAll() {
         ];
 
         for (const icon of appIcons) {
-            await generateIcon(colorSVG, path.join(appPath, icon.name), icon.size);
+            // Add black rounded background for dock icons (larger sizes)
+            const addBg = icon.size >= 128;
+            await generateIcon(colorSVG, path.join(appPath, icon.name), icon.size, addBg);
         }
 
-        // Menu bar templates (monochrome)
-        const menuIcons = [
+        // Menu bar templates (monochrome, tightly cropped)
+        const menuIcons: IconConfig[] = [
             { name: 'iconTemplate.png', size: 16 },
             { name: 'tray-icon-macos.png', size: 16 },
             { name: 'iconTemplate@1.5x.png', size: 24 },
@@ -162,41 +234,35 @@ async function buildAll() {
         ];
 
         for (const icon of menuIcons) {
-            await generateIcon(monoSVG, path.join(appPath, icon.name), icon.size);
+            await generateIcon(menuBarSVG, path.join(appPath, icon.name), icon.size);
         }
-
-        // Save SVG source
-        fs.writeFileSync(path.join(appPath, 'icon.svg'), colorSVG);
-        console.log('');
     }
 
-    // Generate icons for zoo/app public directory
-    const publicPath = '../app/apps/zoo-desktop/public';
-    if (fs.existsSync(publicPath)) {
-        console.log('Generating web icons:');
-        await generateIcon(colorSVG, path.join(publicPath, 'favicon.png'), 32);
-        await generateIcon(colorSVG, path.join(publicPath, 'zoo-logo.png'), 256);
-        fs.writeFileSync(path.join(publicPath, 'zoo-logo.svg'), colorSVG);
-        console.log('');
+    // Web icons
+    const webPath = '../app/apps/zoo-desktop/public';
+    if (fs.existsSync(webPath)) {
+        console.log('\nGenerating web icons:');
+        await generateIcon(colorSVG, path.join(webPath, 'favicon.png'), 32);
+        await generateIcon(colorSVG, path.join(webPath, 'zoo-logo.png'), 256);
     }
 
-    // Generate icons for zoo/app assets
-    const assetsPath = '../app/assets';
-    if (fs.existsSync(assetsPath)) {
-        console.log('Generating app assets:');
-        await generateIcon(colorSVG, path.join(assetsPath, 'icon.png'), 512);
-        console.log('');
+    // Main app assets
+    const appAssetsPath = '../app/assets';
+    if (fs.existsSync(appAssetsPath)) {
+        console.log('\nGenerating app assets:');
+        await generateIcon(colorSVG, path.join(appAssetsPath, 'icon.png'), 512, true);
     }
 
-    // Generate main app logo
-    const appRoot = '../app';
-    if (fs.existsSync(appRoot)) {
-        await generateIcon(colorSVG, path.join(appRoot, 'zoo-logo.png'), 256);
+    // Logo in app root
+    await generateIcon(colorSVG, '../app/zoo-logo.png', 256);
+
+    // Reference icons
+    if (!fs.existsSync('dist/icons')) {
+        fs.mkdirSync('dist/icons', { recursive: true });
     }
 
-    // Generate dist icons for reference
     console.log('Generating reference icons in dist/:');
-    const distIcons = [
+    const distIcons: IconConfig[] = [
         { name: 'dist/icons/16.png', size: 16 },
         { name: 'dist/icons/32.png', size: 32 },
         { name: 'dist/icons/64.png', size: 64 },
@@ -207,6 +273,8 @@ async function buildAll() {
         { name: 'dist/icons/mono-16.png', size: 16, svg: monoSVG },
         { name: 'dist/icons/mono-32.png', size: 32, svg: monoSVG },
         { name: 'dist/icons/mono-64.png', size: 64, svg: monoSVG },
+        { name: 'dist/icons/menubar-16.png', size: 16, svg: menuBarSVG },
+        { name: 'dist/icons/menubar-32.png', size: 32, svg: menuBarSVG },
     ];
 
     for (const icon of distIcons) {
@@ -217,16 +285,18 @@ async function buildAll() {
 }
 
 // Check if sharp is installed
-const checkAndRun = async () => {
+const checkAndRun = async (): Promise<void> => {
     try {
-        require.resolve('sharp');
+        await import('sharp');
     } catch (e) {
         console.log('Installing sharp...');
-        const { execSync } = require('child_process');
         execSync('npm install sharp', { stdio: 'inherit' });
     }
 
     await buildAll().catch(console.error);
 };
 
-checkAndRun();
+// Run if called directly
+if (require.main === module) {
+    checkAndRun();
+}

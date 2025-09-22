@@ -22,10 +22,18 @@
     }
   },
   "scripts": {
-    "build": "npm run clean && npm run compile",
+    "build": "npm run clean && npm run compile && npm run build:cli",
+    "build:cli": "tsc src/build.ts --outDir dist --module commonjs --target es2020 --esModuleInterop --skipLibCheck",
     "compile": "tsc",
     "clean": "rm -rf dist",
-    "generate-icons": "node build.js",
+    "dev": "tsc --watch",
+    "generate": "node dist/build.js",
+    "preview": "npm run generate && open menu-bar-preview.html",
+    "lint": "eslint src --ext .ts,.tsx",
+    "format": "prettier --write 'src/**/*.{ts,tsx,json}'",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run build",
+    "watch": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
@@ -42,6 +50,7 @@
     "sharp": "^0.34.4"
   },
   "devDependencies": {
+    "@types/minimatch": "^5.1.2",
     "@types/node": "^20.19.17",
     "@types/react": "^18.3.24",
     "react": "^18.3.1",
