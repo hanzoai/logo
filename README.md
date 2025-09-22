@@ -43,18 +43,13 @@
 
   <table>
     <tr>
-      <th>macOS Dock Icon</th>
-      <th>Monochrome</th>
-      <th>Menu Bar Icon</th>
+      <th>Dock Icon</th>
+      <th>Menu Icon</th>
     </tr>
     <tr>
       <td align="center">
         <img src="docs/assets/logo-macos-dock.png" width="128" height="128" alt="macOS Dock"><br>
         <sub>Rounded corners + black background</sub>
-      </td>
-      <td align="center">
-        <img src="docs/assets/logo-mono-128.png" width="128" height="128" alt="Monochrome"><br>
-        <sub>For single color displays</sub>
       </td>
       <td align="center">
         <img src="docs/assets/logo-menubar-32.png" width="32" height="32" alt="Menu Bar"><br>
