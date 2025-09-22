@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="docs/assets/hanzo-logo.svg" alt="Hanzo Logo" width="256" height="256">
+  <img src="docs/assets/logo-macos-dock.png" alt="Hanzo Logo" width="256" height="256">
 
   # @hanzo/logo
 
@@ -58,7 +58,7 @@
       </td>
       <td align="center">
         <img src="docs/assets/logo-menubar-32.png" width="32" height="32" alt="Menu Bar"><br>
-        <sub>Optimized for menu bars</sub>
+        <sub>Solid filled for menu bars</sub>
       </td>
     </tr>
   </table>

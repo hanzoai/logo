@@ -21,8 +21,8 @@ async function generateIcon(svgString: string, outputPath: string, size: number,
     }
 
     if (addBackground) {
-        // For dock icons, add rounded square black background
-        const logoSize = Math.floor(size * 0.8);
+        // For dock icons, add rounded square black background with more padding
+        const logoSize = Math.floor(size * 0.65); // Reduced from 0.8 for more space
         const padding = Math.floor((size - logoSize) / 2);
         const cornerRadius = Math.floor(size * 0.22); // macOS-style corner radius
 
