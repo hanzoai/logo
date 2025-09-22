@@ -87,6 +87,55 @@ export function getMonoSVG(): string {
 }
 
 /**
+ * Generate tightly cropped color SVG logo
+ */
+export function getColorSVGCropped(): string {
+  const s = LOGO_SETTINGS.color;
+
+  // Calculate tight bounds (matching the outer circle)
+  const padding = 20; // Small padding for visual comfort
+  const minX = s.outerX - s.outerRadius - padding;
+  const minY = s.outerY - s.outerRadius - padding;
+  const size = (s.outerRadius + padding) * 2;
+
+  return `<svg width="${size}" height="${size}" viewBox="${minX} ${minY} ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="outerCircleColor">
+        <circle cx="${s.outerX}" cy="${s.outerY}" r="${s.outerRadius}"/>
+      </clipPath>
+      <clipPath id="greenClip">
+        <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}"/>
+      </clipPath>
+      <clipPath id="redClip">
+        <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}"/>
+      </clipPath>
+      <clipPath id="blueClip">
+        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}"/>
+      </clipPath>
+    </defs>
+    <g clip-path="url(#outerCircleColor)">
+      <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}" fill="#00A652"/>
+      <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#ED1C24"/>
+      <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#2E3192"/>
+      <g clip-path="url(#greenClip)">
+        <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#FCF006"/>
+      </g>
+      <g clip-path="url(#greenClip)">
+        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#01ACF1"/>
+      </g>
+      <g clip-path="url(#redClip)">
+        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#EA018E"/>
+      </g>
+      <g clip-path="url(#greenClip)">
+        <g clip-path="url(#redClip)">
+          <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#FFFFFF"/>
+        </g>
+      </g>
+    </g>
+  </svg>`;
+}
+
+/**
  * Generate white SVG logo (for dark backgrounds)
  */
 export function getWhiteSVG(): string {
