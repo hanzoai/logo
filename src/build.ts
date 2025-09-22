@@ -37,11 +37,6 @@ function generateColorSVG(): string {
     const s = LOGO_SETTINGS.color;
     return `<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
         <defs>
-            <radialGradient id="blackGradient" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
-                <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
-                <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
-            </radialGradient>
             <clipPath id="outerCircleColor">
                 <circle cx="${s.outerX}" cy="${s.outerY}" r="${s.outerRadius}"/>
             </clipPath>
@@ -55,7 +50,6 @@ function generateColorSVG(): string {
                 <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}"/>
             </clipPath>
         </defs>
-        <rect x="0" y="0" width="1024" height="1024" fill="url(#blackGradient)"/>
         <g clip-path="url(#outerCircleColor)">
             <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}" fill="#00A652"/>
             <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#ED1C24"/>
@@ -146,9 +140,8 @@ async function generateIcon(svgString: string, outputPath: string, size: number,
         // Create background layer
         const bg = await sharp(Buffer.from(bgSvg)).png().toBuffer();
 
-        // Create logo layer (removing the black gradient background)
-        const cleanSvg = svgString.replace(/<rect[^>]*fill="url\(#blackGradient\)"[^>]*\/>/g, '');
-        const logo = await sharp(Buffer.from(cleanSvg))
+        // Create logo layer
+        const logo = await sharp(Buffer.from(svgString))
             .resize(logoSize, logoSize)
             .png()
             .toBuffer();
