@@ -1,8 +1,8 @@
 import React from 'react';
-import { getColorSVG, getMonoSVG, getWhiteSVG } from './logos';
-import type { LogoVariant } from './types';
+import { getColorSVG, getMonoSVG, getWhiteSVG } from './logos.js';
+import type { LogoVariant } from './types.js';
 
-export interface ZooLogoProps {
+export interface HanzoLogoProps {
   variant?: LogoVariant;
   size?: number | string;
   className?: string;
@@ -10,18 +10,18 @@ export interface ZooLogoProps {
 }
 
 /**
- * React component for Zoo logo
+ * React component for Hanzo logo
  *
  * @example
  * ```tsx
- * import { ZooLogo } from '@zooai/logo';
+ * import { HanzoLogo } from '@hanzo/logo';
  *
- * <ZooLogo size={64} />
- * <ZooLogo variant="mono" size="2rem" />
- * <ZooLogo variant="white" className="w-16 h-16" />
+ * <HanzoLogo size={64} />
+ * <HanzoLogo variant="mono" size="2rem" />
+ * <HanzoLogo variant="white" className="w-16 h-16" />
  * ```
  */
-export const ZooLogo: React.FC<ZooLogoProps> = ({
+export const HanzoLogo: React.FC<HanzoLogoProps> = ({
   variant = 'color',
   size = 64,
   className,
@@ -54,17 +54,17 @@ export const ZooLogo: React.FC<ZooLogoProps> = ({
 };
 
 /**
- * Zoo favicon component for <head>
+ * Hanzo favicon component for <head>
  *
  * @example
  * ```tsx
- * import { ZooFavicon } from '@zooai/logo';
+ * import { HanzoFavicon } from '@hanzo/logo';
  *
  * // In your app's <head>
- * <ZooFavicon />
+ * <HanzoFavicon />
  * ```
  */
-export const ZooFavicon: React.FC = () => {
+export const HanzoFavicon: React.FC = () => {
   const svg = getColorSVG();
   const dataUrl = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 
@@ -75,3 +75,7 @@ export const ZooFavicon: React.FC = () => {
     </>
   );
 };
+
+// Export with backwards compatible names
+export { HanzoLogo as ZooLogo };
+export { HanzoFavicon as ZooFavicon };

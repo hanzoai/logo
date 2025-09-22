@@ -1,22 +1,11 @@
 export interface LogoSettings {
   color: {
-    outerRadius: number;
-    outerX: number;
-    outerY: number;
-    circleRadius: number;
-    greenX: number;
-    greenY: number;
-    redX: number;
-    redY: number;
-    blueX: number;
-    blueY: number;
+    viewBox: string;
+    width: number;
+    height: number;
   };
   mono: {
-    outerRadius: number;
-    outerX: number;
-    outerY: number;
     strokeWidth: number;
-    outerStrokeWidth: number;
   };
 }
 

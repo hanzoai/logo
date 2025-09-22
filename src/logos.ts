@@ -1,67 +1,29 @@
-import type { LogoSettings, LogoOptions } from './types';
+import type { LogoSettings, LogoOptions } from './types.js';
 
-// Final perfect logo settings
+// Hanzo logo settings
 export const LOGO_SETTINGS: LogoSettings = {
   color: {
-    outerRadius: 270,
-    outerX: 512,
-    outerY: 511,
-    circleRadius: 234,
-    greenX: 513,
-    greenY: 369,
-    redX: 365,
-    redY: 595,
-    blueX: 643,
-    blueY: 595
+    viewBox: '0 0 67 67',
+    width: 67,
+    height: 67
   },
   mono: {
-    outerRadius: 283,
-    outerX: 508,
-    outerY: 510,
-    strokeWidth: 33,
-    outerStrokeWidth: 36
+    strokeWidth: 2
   }
 };
 
 /**
- * Generate color SVG logo
+ * Generate Hanzo color SVG logo
  */
 export function getColorSVG(): string {
-  const s = LOGO_SETTINGS.color;
-  return `<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <clipPath id="outerCircleColor">
-        <circle cx="${s.outerX}" cy="${s.outerY}" r="${s.outerRadius}"/>
-      </clipPath>
-      <clipPath id="greenClip">
-        <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}"/>
-      </clipPath>
-      <clipPath id="redClip">
-        <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}"/>
-      </clipPath>
-      <clipPath id="blueClip">
-        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}"/>
-      </clipPath>
-    </defs>
-    <g clip-path="url(#outerCircleColor)">
-      <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}" fill="#00A652"/>
-      <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#ED1C24"/>
-      <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#2E3192"/>
-      <g clip-path="url(#greenClip)">
-        <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#FCF006"/>
-      </g>
-      <g clip-path="url(#greenClip)">
-        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#01ACF1"/>
-      </g>
-      <g clip-path="url(#redClip)">
-        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#EA018E"/>
-      </g>
-      <g clip-path="url(#greenClip)">
-        <g clip-path="url(#redClip)">
-          <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#FFFFFF"/>
-        </g>
-      </g>
-    </g>
+  return `<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.21 67V44.6369H0V67H22.21Z" fill="#ffffff"/>
+    <path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="#DDDDDD"/>
+    <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="#ffffff"/>
+    <path d="M22.21 0H0V22.3184H22.21V0Z" fill="#ffffff"/>
+    <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="#ffffff"/>
+    <path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="#DDDDDD"/>
+    <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="#ffffff"/>
   </svg>`;
 }
 
@@ -69,20 +31,14 @@ export function getColorSVG(): string {
  * Generate monochrome SVG logo
  */
 export function getMonoSVG(): string {
-  const c = LOGO_SETTINGS.color;
-  const m = LOGO_SETTINGS.mono;
-  return `<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <clipPath id="outerCircleMono">
-        <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius}"></circle>
-      </clipPath>
-    </defs>
-    <g clip-path="url(#outerCircleMono)">
-      <circle cx="${c.greenX}" cy="${c.greenY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-      <circle cx="${c.redX}" cy="${c.redY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-      <circle cx="${c.blueX}" cy="${c.blueY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-      <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius - m.outerStrokeWidth/2}" fill="none" stroke="black" stroke-width="${m.outerStrokeWidth}"></circle>
-    </g>
+  return `<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.21 67V44.6369H0V67H22.21Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M22.21 0H0V22.3184H22.21V0Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="none" stroke="black" stroke-width="1"/>
+    <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="none" stroke="black" stroke-width="1"/>
   </svg>`;
 }
 
@@ -90,57 +46,14 @@ export function getMonoSVG(): string {
  * Generate tightly cropped color SVG logo
  */
 export function getColorSVGCropped(): string {
-  const s = LOGO_SETTINGS.color;
-
-  // Calculate tight bounds (matching the outer circle)
-  const padding = 20; // Small padding for visual comfort
-  const minX = s.outerX - s.outerRadius - padding;
-  const minY = s.outerY - s.outerRadius - padding;
-  const size = (s.outerRadius + padding) * 2;
-
-  return `<svg width="${size}" height="${size}" viewBox="${minX} ${minY} ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <clipPath id="outerCircleColor">
-        <circle cx="${s.outerX}" cy="${s.outerY}" r="${s.outerRadius}"/>
-      </clipPath>
-      <clipPath id="greenClip">
-        <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}"/>
-      </clipPath>
-      <clipPath id="redClip">
-        <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}"/>
-      </clipPath>
-      <clipPath id="blueClip">
-        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}"/>
-      </clipPath>
-    </defs>
-    <g clip-path="url(#outerCircleColor)">
-      <circle cx="${s.greenX}" cy="${s.greenY}" r="${s.circleRadius}" fill="#00A652"/>
-      <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#ED1C24"/>
-      <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#2E3192"/>
-      <g clip-path="url(#greenClip)">
-        <circle cx="${s.redX}" cy="${s.redY}" r="${s.circleRadius}" fill="#FCF006"/>
-      </g>
-      <g clip-path="url(#greenClip)">
-        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#01ACF1"/>
-      </g>
-      <g clip-path="url(#redClip)">
-        <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#EA018E"/>
-      </g>
-      <g clip-path="url(#greenClip)">
-        <g clip-path="url(#redClip)">
-          <circle cx="${s.blueX}" cy="${s.blueY}" r="${s.circleRadius}" fill="#FFFFFF"/>
-        </g>
-      </g>
-    </g>
-  </svg>`;
+  // Hanzo logo is already minimal, return as-is
+  return getColorSVG();
 }
 
 /**
  * Generate white SVG logo (for dark backgrounds)
  */
 export function getWhiteSVG(): string {
-  const c = LOGO_SETTINGS.color;
-  const m = LOGO_SETTINGS.mono;
   return getMonoSVG().replace(/stroke="black"/g, 'stroke="white"');
 }
 
@@ -148,30 +61,15 @@ export function getWhiteSVG(): string {
  * Generate monochrome SVG for menu bar (tightly cropped)
  */
 export function getMenuBarSVG(): string {
-  const c = LOGO_SETTINGS.color;
-  const m = LOGO_SETTINGS.mono;
-
-  // Calculate tight bounding box around the circles
-  const minX = Math.min(c.redX, c.greenX, c.blueX) - c.circleRadius - m.strokeWidth;
-  const maxX = Math.max(c.redX, c.greenX, c.blueX) + c.circleRadius + m.strokeWidth;
-  const minY = Math.min(c.greenY, c.redY, c.blueY) - c.circleRadius - m.strokeWidth;
-  const maxY = Math.max(c.greenY, c.redY, c.blueY) + c.circleRadius + m.strokeWidth;
-
-  const width = maxX - minX;
-  const height = maxY - minY;
-
-  return `<svg viewBox="${minX} ${minY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <clipPath id="outerCircleMenu">
-        <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius}"></circle>
-      </clipPath>
-    </defs>
-    <g clip-path="url(#outerCircleMenu)">
-      <circle cx="${c.greenX}" cy="${c.greenY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-      <circle cx="${c.redX}" cy="${c.redY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-      <circle cx="${c.blueX}" cy="${c.blueY}" r="${c.circleRadius}" fill="none" stroke="black" stroke-width="${m.strokeWidth}"></circle>
-      <circle cx="${m.outerX}" cy="${m.outerY}" r="${m.outerRadius - m.outerStrokeWidth/2}" fill="none" stroke="black" stroke-width="${m.outerStrokeWidth}"></circle>
-    </g>
+  // For menu bar, we want a filled version for better visibility at small sizes
+  return `<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.21 67V44.6369H0V67H22.21Z" fill="black"/>
+    <path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="black" opacity="0.8"/>
+    <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="black"/>
+    <path d="M22.21 0H0V22.3184H22.21V0Z" fill="black"/>
+    <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="black"/>
+    <path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="black" opacity="0.8"/>
+    <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="black"/>
   </svg>`;
 }
 
@@ -242,9 +140,9 @@ export function getLogo(options: LogoOptions = {}): string {
 }
 
 // Export pre-generated versions for convenience
-export const zooLogo = getColorSVG();
-export const zooLogoMono = getMonoSVG();
-export const zooLogoWhite = getWhiteSVG();
-export const zooLogoDataUrl = getLogoDataUrl();
-export const zooLogoMonoDataUrl = getLogoDataUrl({ variant: 'mono' });
-export const zooLogoWhiteDataUrl = getLogoDataUrl({ variant: 'white' });
+export const hanzoLogo = getColorSVG();
+export const hanzoLogoMono = getMonoSVG();
+export const hanzoLogoWhite = getWhiteSVG();
+export const hanzoLogoDataUrl = getLogoDataUrl();
+export const hanzoLogoMonoDataUrl = getLogoDataUrl({ variant: 'mono' });
+export const hanzoLogoWhiteDataUrl = getLogoDataUrl({ variant: 'white' });
