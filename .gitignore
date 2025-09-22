@@ -55,8 +55,12 @@ tmp/
 *.icns
 *.ico
 
-# But keep important files
+# But keep important files for GitHub display
 !menu-bar-preview.html
 !dist/zoo-logo.svg
 !dist/zoo-logo-mono.svg
 !dist/zoo-logo-menubar.svg
+
+# Keep showcase images for README
+!docs/assets/*.png
+!docs/assets/*.svg
