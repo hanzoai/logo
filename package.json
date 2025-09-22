@@ -67,7 +67,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hanzo-ai/logo.git"
+    "url": "git+https://github.com/hanzoai/logo.git"
   },
   "publishConfig": {
     "access": "public"

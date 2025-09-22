@@ -121,4 +121,4 @@ MIT © Hanzo AI
 
 ## Support
 
-For issues, questions, or suggestions, visit [GitHub Issues](https://github.com/hanzoai/hanzo-logo/issues)
+For issues, questions, or suggestions, visit [GitHub Issues](https://github.com/hanzoai/logo/issues)
