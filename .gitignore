@@ -64,3 +64,10 @@ tmp/
 # Keep showcase images for README
 !docs/assets/*.png
 !docs/assets/*.svg
+
+
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+GROK.md
+QWEN.md
