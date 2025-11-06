@@ -6,3 +6,4 @@
 
 export * from './logos.js';
 export * from './types.js';
+export * from './react.js';
