@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
