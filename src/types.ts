@@ -9,7 +9,7 @@ export interface LogoSettings {
   };
 }
 
-export type LogoVariant = 'color' | 'mono' | 'white';
+export type LogoVariant = 'color' | 'mono' | 'white' | 'favicon';
 export type LogoFormat = 'svg' | 'dataUrl' | 'base64';
 
 export interface LogoOptions {

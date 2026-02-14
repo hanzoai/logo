@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
@@ -15,6 +15,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
+    },
+    "./logos": {
+      "types": "./dist/logos.d.ts",
+      "import": "./dist/logos.js",
+      "require": "./dist/logos.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",
