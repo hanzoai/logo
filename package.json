@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
@@ -8,7 +8,8 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "svg"
   ],
   "exports": {
     ".": {

@@ -1,4 +1,5 @@
 import type { LogoSettings, LogoOptions } from './types.js';
+import { ANIMATED_SVG } from './animated.js';
 
 // Hanzo logo settings
 export const LOGO_SETTINGS: LogoSettings = {
@@ -11,6 +12,21 @@ export const LOGO_SETTINGS: LogoSettings = {
     strokeWidth: 2
   }
 };
+
+/** Mark viewBox — the block-H's native coordinate space. */
+export const MARK_VIEWBOX = '0 0 67 67';
+
+/**
+ * Raw, fill-less block-H path geometry — the single source of the Hanzo mark.
+ * Callers set their own `fill` (e.g. `@hanzo/brand` card generators, og images).
+ * Use this instead of re-typing the path data anywhere.
+ */
+export const MARK_PATHS =
+  '<path d="M22.21 67V44.6369H0V67H22.21Z"/>' +
+  '<path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z"/>' +
+  '<path d="M22.21 0H0V22.3184H22.21V0Z"/>' +
+  '<path d="M66.7198 0H44.5098V22.3184H66.7198V0Z"/>' +
+  '<path d="M66.7198 67V44.6369H44.5098V67H66.7198Z"/>';
 
 /**
  * Generate Hanzo color SVG logo
@@ -154,6 +170,11 @@ export function getLogoBase64(options: LogoOptions = {}): string {
  */
 export function getLogo(options: LogoOptions = {}): string {
   const { variant = 'color', format = 'svg' } = options;
+  if (variant === 'animated') {
+    if (format === 'dataUrl') return getAnimatedDataUrl();
+    if (format === 'base64') return btoa(unescape(encodeURIComponent(getAnimatedSVG())));
+    return getAnimatedSVG();
+  }
 
   switch (format) {
     case 'dataUrl':
@@ -183,3 +204,19 @@ export const hanzoLogoDataUrl = getLogoDataUrl();
 export const hanzoLogoMonoDataUrl = getLogoDataUrl({ variant: 'mono' });
 export const hanzoLogoWhiteDataUrl = getLogoDataUrl({ variant: 'white' });
 export const hanzoFaviconDataUrl = getLogoDataUrl({ variant: 'favicon' });
+/**
+ * Interactive animated mark — load (assemble) → hover (one graceful turn,
+ * returns to rest) → press (squash). Pure CSS, no JS. Inline this SVG into
+ * the DOM (not <img>) for the hover/press interactions to fire.
+ */
+export function getAnimatedSVG(): string {
+  return ANIMATED_SVG;
+}
+
+/** Animated mark as a data: URL (load animation runs even in <img>). */
+export function getAnimatedDataUrl(): string {
+  return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(ANIMATED_SVG)));
+}
+
+export const hanzoLogoAnimated = ANIMATED_SVG;
+export const hanzoLogoAnimatedDataUrl = getAnimatedDataUrl();
