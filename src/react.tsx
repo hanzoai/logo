@@ -1,5 +1,5 @@
 import React from 'react';
-import { getColorSVG, getMonoSVG, getWhiteSVG, getFaviconSVG } from './logos.js';
+import { getColorSVG, getMonoSVG, getWhiteSVG, getFaviconSVG, getAnimatedSVG } from './logos.js';
 import type { LogoVariant } from './types.js';
 
 export interface HanzoLogoProps {
@@ -38,6 +38,9 @@ export const HanzoLogo: React.FC<HanzoLogoProps> = ({
       break;
     case 'favicon':
       svg = getFaviconSVG();
+      break;
+    case 'animated':
+      svg = getAnimatedSVG();
       break;
     default:
       svg = getColorSVG();
