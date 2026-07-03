@@ -280,6 +280,18 @@ async function buildAll(): Promise<void> {
     await generateIcon(menuBarSVG, 'dist/menubar/iconTemplate@2x.png', 32);
     await generateIcon(menuBarSVG, 'dist/menubar/iconTemplate@3x.png', 48);
 
+    // === SLACK APP ICON ===
+    // Slack wants a SQUARE 2000×2000 PNG (it applies its own rounded-corner
+    // mask, so the source stays square — cornerRadius 0). Mark centered on the
+    // brand-black field. A 512 copy for anywhere a smaller square is needed.
+    console.log('\n📁 Slack App Icon (dist/slack/):');
+    await generateIcon(colorSVG, 'dist/slack/slack-icon-2000.png', 2000, {
+        addBackground: true, bgColor: '#000000', cornerRadius: 0,
+    });
+    await generateIcon(colorSVG, 'dist/slack/slack-icon-512.png', 512, {
+        addBackground: true, bgColor: '#000000', cornerRadius: 0,
+    });
+
     // === GENERATE SHOWCASE HTML ===
     console.log('\n📄 Generating showcase...');
     generateShowcase();
