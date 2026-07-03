@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
@@ -29,7 +29,7 @@
     }
   },
   "scripts": {
-    "build": "npm run clean && npm run compile && npm run build:cli",
+    "build": "npm run clean && npm run compile && npm run build:cli && npm run generate",
     "build:cli": "tsc src/build.ts --outDir dist --module esnext --target es2020 --moduleResolution node --esModuleInterop --skipLibCheck",
     "compile": "tsc",
     "clean": "rm -rf dist",
