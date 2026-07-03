@@ -99,6 +99,49 @@ async function generateIcon(
     console.log(`✓ ${path.relative(process.cwd(), outputPath)} (${options.aspectRatio ? `${options.aspectRatio.width}×${options.aspectRatio.height}` : `${size}×${size}`})`);
 }
 
+// writeIco packs several PNGs into ONE multi-resolution .ico — the format
+// Windows favicons, taskbar, and .desktop icons want. Modern ICO embeds the PNG
+// bytes verbatim (no BMP re-encode), so this is a pure container writer over the
+// PNGs generateIcon already produced: no new dependency, no image re-processing.
+// Sizes are read from each source PNG so the directory entry is always correct.
+async function writeIco(pngPaths: string[], outputPath: string): Promise<void> {
+    const images = await Promise.all(
+        pngPaths.map(async (p) => {
+            const data = fs.readFileSync(p);
+            // PNG IHDR width/height are big-endian uint32 at byte offsets 16/20.
+            const w = data.readUInt32BE(16);
+            const h = data.readUInt32BE(20);
+            return { data, w, h };
+        }),
+    );
+    const count = images.length;
+    const header = Buffer.alloc(6);
+    header.writeUInt16LE(0, 0); // reserved
+    header.writeUInt16LE(1, 2); // type 1 = icon
+    header.writeUInt16LE(count, 4);
+
+    const dir = Buffer.alloc(16 * count);
+    let offset = 6 + 16 * count; // image data starts after header + directory
+    images.forEach((img, i) => {
+        const e = 16 * i;
+        dir.writeUInt8(img.w >= 256 ? 0 : img.w, e + 0); // 0 encodes 256
+        dir.writeUInt8(img.h >= 256 ? 0 : img.h, e + 1);
+        dir.writeUInt8(0, e + 2); // palette count (0 = truecolor)
+        dir.writeUInt8(0, e + 3); // reserved
+        dir.writeUInt16LE(1, e + 4); // color planes
+        dir.writeUInt16LE(32, e + 6); // bits per pixel
+        dir.writeUInt32LE(img.data.length, e + 8); // image size
+        dir.writeUInt32LE(offset, e + 12); // image offset
+        offset += img.data.length;
+    });
+
+    const outDir = path.dirname(outputPath);
+    if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+    fs.writeFileSync(outputPath, Buffer.concat([header, dir, ...images.map((i) => i.data)]));
+    const dims = images.map((i) => `${i.w}`).join('/');
+    console.log(`✓ ${path.relative(process.cwd(), outputPath)} (${dims})`);
+}
+
 async function buildAll(): Promise<void> {
     console.log('🎨 Hanzo Logo Builder\n');
 
@@ -143,12 +186,39 @@ async function buildAll(): Promise<void> {
     }
     // Also generate with black background versions
     for (const size of [16, 32, 48]) {
-        await generateIcon(whiteSVG, `dist/favicon/favicon-bg-${size}.png`, size, { 
-            addBackground: true, 
+        await generateIcon(whiteSVG, `dist/favicon/favicon-bg-${size}.png`, size, {
+            addBackground: true,
             bgColor: '#000000',
-            cornerRadius: 0 
+            cornerRadius: 0
         });
     }
+
+    // === ICO (Windows favicon / taskbar / .desktop) ===
+    // Pack the favicon PNGs into standard multi-resolution .ico files. The
+    // canonical dist/favicon.ico is what a site drops at its web root; the
+    // per-surface copies keep everything one `ls dist` away.
+    console.log('\n📁 ICO files:');
+    const icoSizes = [16, 32, 48, 64, 128, 256];
+    const faviconPngs = icoSizes.map((s) => `dist/favicon/favicon-${s}.png`);
+    await writeIco(faviconPngs, 'dist/favicon.ico');
+    await writeIco(faviconPngs, 'dist/favicon/favicon.ico');
+    // A color-logo .ico (app/exe icon) from the color icons that exist (the
+    // standard set has no 48px, so use its own sizes, not the favicon set's).
+    await writeIco([16, 32, 64, 128, 256].map((s) => `dist/icons/logo-${s}.png`), 'dist/icons/logo.ico');
+
+    // === WEB-STANDARD NAMED ICONS (drop-in for any site manifest) ===
+    // The exact filenames tools/browsers look for: android-chrome-*, the
+    // default apple-touch-icon.png, and the Windows tile. Same art, canonical
+    // names, so a project can copy dist/favicon/* verbatim.
+    console.log('\n📁 Web-standard named icons (dist/favicon/):');
+    await generateIcon(faviconSVG, 'dist/favicon/android-chrome-192x192.png', 192);
+    await generateIcon(faviconSVG, 'dist/favicon/android-chrome-512x512.png', 512);
+    await generateIcon(colorSVG, 'dist/favicon/apple-touch-icon.png', 180, {
+        addBackground: true, bgColor: '#000000', cornerRadius: 40,
+    });
+    await generateIcon(whiteSVG, 'dist/favicon/mstile-150x150.png', 150, {
+        addBackground: true, bgColor: '#000000',
+    });
 
     // === APPLE TOUCH ICONS ===
     console.log('\n📁 Apple Touch Icons (dist/apple/):');
