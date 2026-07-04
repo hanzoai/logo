@@ -81,7 +81,3 @@ export const HanzoFavicon: React.FC = () => {
     </>
   );
 };
-
-// Export with backwards compatible names
-export { HanzoLogo as ZooLogo };
-export { HanzoFavicon as ZooFavicon };
