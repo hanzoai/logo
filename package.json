@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
@@ -77,5 +77,11 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "brand": {
+    "name": "Hanzo",
+    "tagline": "Official brand marks — SVG, PNG, ICO, favicons & app icons.",
+    "github": "hanzoai",
+    "domain": "hanzo.ai"
   }
 }
