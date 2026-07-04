@@ -2,9 +2,9 @@
   <img src=".github/hero.svg" alt="@hanzo/logo" width="100%" />
 </p>
 
-# Logo Assets
+# Hanzo — Brand & Logo Assets
 
-Official logos and marks.
+Official Hanzo brand marks in every format and size — SVG, PNG, multi-resolution ICO, favicons, app/dock/tray icons, and social cards. Installable via `@hanzo/logo`, browsable in `dist/`.
 
 ## Formats
 
