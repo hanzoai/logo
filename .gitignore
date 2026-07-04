@@ -88,3 +88,4 @@ dist/**/*.d.ts
 dist/**/*.map
 dist/*.js
 dist/*.d.ts
+.npmrc
