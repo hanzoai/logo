@@ -17,15 +17,20 @@ export const LOGO_SETTINGS: LogoSettings = {
 export const MARK_VIEWBOX = '0 0 67 67';
 
 /**
- * Raw, fill-less block-H path geometry — the single source of the Hanzo mark.
- * Callers set their own `fill` (e.g. `@hanzo/brand` card generators, og images).
+ * Raw block-H path geometry — the single source of the Hanzo mark.
+ * The canonical mark is SEVEN paths: five fill-less body blocks (callers set
+ * their own `fill` — e.g. `@hanzo/brand` card generators, og images) plus the
+ * two `class="shade"` accent slivers that give the H its shaded depth
+ * (#DDDDDD in every shipped variant; restyle via `.shade` if needed).
  * Use this instead of re-typing the path data anywhere.
  */
 export const MARK_PATHS =
   '<path d="M22.21 67V44.6369H0V67H22.21Z"/>' +
+  '<path class="shade" fill="#DDDDDD" d="M0 44.6369L22.21 46.8285V44.6369H0Z"/>' +
   '<path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z"/>' +
   '<path d="M22.21 0H0V22.3184H22.21V0Z"/>' +
   '<path d="M66.7198 0H44.5098V22.3184H66.7198V0Z"/>' +
+  '<path class="shade" fill="#DDDDDD" d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z"/>' +
   '<path d="M66.7198 67V44.6369H44.5098V67H66.7198Z"/>';
 
 /**
