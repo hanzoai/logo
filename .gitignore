@@ -89,3 +89,8 @@ dist/**/*.map
 dist/*.js
 dist/*.d.ts
 .npmrc
+
+# pnpm only — pnpm-lock.yaml is the tracked lockfile.
+package-lock.json
+yarn.lock
+bun.lockb
