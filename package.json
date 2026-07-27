@@ -1,6 +1,7 @@
 {
   "name": "@hanzo/logo",
   "version": "1.0.10",
+  "packageManager": "pnpm@11.17.0",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
@@ -29,19 +30,19 @@
     }
   },
   "scripts": {
-    "build": "npm run clean && npm run compile && npm run build:cli && npm run generate",
+    "build": "pnpm clean && pnpm compile && pnpm build:cli && pnpm generate",
     "build:cli": "tsc src/build.ts --outDir dist --module esnext --target es2020 --moduleResolution node --esModuleInterop --skipLibCheck",
     "compile": "tsc",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
     "generate": "node dist/build.js",
-    "preview": "npm run generate && open menu-bar-preview.html",
+    "preview": "pnpm generate && open menu-bar-preview.html",
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write 'src/**/*.{ts,tsx,json}'",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && npm run build",
+    "test": "pnpm typecheck && pnpm build",
     "watch": "tsc --watch",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [
     "hanzo",
