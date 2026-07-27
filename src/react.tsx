@@ -1,6 +1,5 @@
 import React from 'react';
-import { getColorSVG, getMonoSVG, getWhiteSVG, getFaviconSVG, getAnimatedSVG, getMenuBarSVG } from './logos.js';
-import { MOTION_CSS } from './motion.js';
+import { getColorSVG, getMonoSVG, getWhiteSVG, getFaviconSVG, getAnimatedSVG } from './logos.js';
 import type { LogoVariant } from './types.js';
 
 export interface HanzoLogoProps {
@@ -8,14 +7,6 @@ export interface HanzoLogoProps {
   size?: number | string;
   className?: string;
   style?: React.CSSProperties;
-  /**
-   * Render the brand motion shell: intro flip + idle breathing + a wordmark
-   * that slides in, holds, then collapses (returns on hover). Pure CSS,
-   * reduced-motion-safe. The mark inherits `currentColor`.
-   */
-  animated?: boolean;
-  /** Wordmark text for the animated shell (white-label). Default "Hanzo". */
-  wordmark?: string;
 }
 
 /**
@@ -34,28 +25,8 @@ export const HanzoLogo: React.FC<HanzoLogoProps> = ({
   variant = 'color',
   size = 64,
   className,
-  style,
-  animated = false,
-  wordmark = 'Hanzo'
+  style
 }) => {
-  if (animated) {
-    return (
-      <span className={className} style={style}>
-        <style dangerouslySetInnerHTML={{ __html: MOTION_CSS }} />
-        <span className="hanzo-motion">
-          <span
-            className="hanzo-mark"
-            style={{ width: size, height: size }}
-            dangerouslySetInnerHTML={{ __html: getMenuBarSVG() }}
-          />
-          <span className="hanzo-word">
-            <span>{wordmark}</span>
-          </span>
-        </span>
-      </span>
-    );
-  }
-
   let svg = '';
 
   switch (variant) {

@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.13",
+  "version": "1.0.10",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
   "main": "dist/index.js",
@@ -21,11 +21,6 @@
       "types": "./dist/logos.d.ts",
       "import": "./dist/logos.js",
       "require": "./dist/logos.js"
-    },
-    "./motion": {
-      "types": "./dist/motion.d.ts",
-      "import": "./dist/motion.js",
-      "require": "./dist/motion.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",
@@ -58,13 +53,15 @@
   ],
   "author": "Hanzo AI",
   "license": "MIT",
+  "dependencies": {
+    "sharp": "^0.34.4"
+  },
   "devDependencies": {
     "@types/minimatch": "^5.1.2",
     "@types/node": "^20.19.17",
     "@types/react": "^18.3.24",
     "react": "^18.3.1",
-    "typescript": "^5.9.2",
-    "sharp": "^0.34.4"
+    "typescript": "^5.9.2"
   },
   "peerDependencies": {
     "react": ">=16.8.0"
@@ -83,7 +80,7 @@
   },
   "brand": {
     "name": "Hanzo",
-    "tagline": "Official brand marks \u2014 SVG, PNG, ICO, favicons & app icons.",
+    "tagline": "Official brand marks — SVG, PNG, ICO, favicons & app icons.",
     "github": "hanzoai",
     "domain": "hanzo.ai"
   }
