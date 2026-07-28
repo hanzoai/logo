@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      sharp:
-        specifier: ^0.34.4
-        version: 0.34.5
     devDependencies:
       '@types/minimatch':
         specifier: ^5.1.2
@@ -24,6 +20,9 @@ importers:
       react:
         specifier: ^18.3.1
         version: 18.3.1
+      sharp:
+        specifier: ^0.34.4
+        version: 0.34.5
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
