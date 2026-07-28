@@ -53,14 +53,14 @@ jobs:
 
       - name: Configure npm authentication
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm config set //registry.npmjs.org/:_authToken $NODE_AUTH_TOKEN
           npm whoami
 
       - name: Check and publish package
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           PACKAGE_NAME=$(node -p "require('./package.json').name")
@@ -80,27 +80,3 @@ jobs:
             echo "PUBLISHED=true" >> $GITHUB_ENV
             echo "PACKAGE_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
           fi
-
-      - name: Create GitHub Release
-        if: env.PUBLISHED == 'true'
-        uses: softprops/action-gh-release@v1
-        with:
-          generate_release_notes: true
-          body: |
-            ## 📦 NPM Package Published
-
-            - @hanzo/logo@${{ env.PACKAGE_VERSION }}
-
-            ### Installation
-
-            ```bash
-            npm install @hanzo/logo@${{ env.PACKAGE_VERSION }}
-            ```
-
-            ### Changes
-
-            See [CHANGELOG.md](https://github.com/hanzoai/logo/blob/main/CHANGELOG.md) for details.
-          files: |
-            CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
