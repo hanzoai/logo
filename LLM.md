@@ -41,9 +41,14 @@ publishing without that build ships every icon and no entry point. Needs
 subresources. It is a SITE, not an App — nothing here executes — so it ships on
 the Sites plane and there is no image, no CR and no pod:
 
-    assemble out/  ->  POST /v1/projects/logo/deploy      (202, queued)
-                   ->  aws s3 sync out s3://<bucket>/<prefix>
-                   ->  POST …/deployments/<id>/complete   {"status":"live"}
+    assemble out/  ->  POST /v1/projects/logo/deploy      202 + an upload grant
+                   ->  POST each file under the grant     bytes skip the API
+                   ->  POST …/deployments/<id>/complete   {status, keys}
+
+This repo holds NO S3 credential. The grant is confined to this site's prefix and
+expires in 30 minutes; deletion rides the `keys` manifest, because a write-only
+grant cannot remove a file. The one secret is `HANZO_DEPLOY_TOKEN`, set ON THE
+FORGE — GitHub's secret store is not in this path at all.
 
 No GitHub Pages and no Cloudflare Pages: the repo used to push this page to a
 `gh-pages` branch, Pages was never configured for it, and `logo.hanzo.ai` has
