@@ -6,6 +6,8 @@ node_modules/
 # Build output
 dist/
 build/
+# The site directory CI assembles (index.html + hz.js out of node_modules).
+out/
 *.tsbuildinfo
 generated/
 

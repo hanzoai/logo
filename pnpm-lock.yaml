@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@hanzo/event':
+        specifier: ^0.3.11
+        version: 0.3.11(react@18.3.1)
       '@types/minimatch':
         specifier: ^5.1.2
         version: 5.1.2
@@ -31,6 +34,14 @@ packages:
 
   '@emnapi/runtime@1.11.3':
     resolution: {integrity: sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==}
+
+  '@hanzo/event@0.3.11':
+    resolution: {integrity: sha512-HLdDWZPPonel3HPgmDOQ+LqXPV8hPEMZFGnXlFT2gPQq+MxcHgAY482Y9jHCCKwLFo8v805FZ81ylTlBAl5RVQ==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -241,6 +252,10 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@hanzo/event@0.3.11(react@18.3.1)':
+    optionalDependencies:
+      react: 18.3.1
 
   '@img/colour@1.1.0': {}
 
