@@ -12,15 +12,21 @@ renders it. The flat 5-path H is only for tiny favicons (`getFaviconSVG`).
 
 One way, and it runs on our own stack:
 
-    push  ->  github.com/hanzoai/logo          (a mirror)
-      ->  git.hanzo.ai/hanzoai/logo             CANONICAL
+    push  ->  github.com/hanzoai/logo          where code lands
+      ->  git.hanzo.ai/hanzoai/logo             pull mirror; runs the CI
               .hanzo/workflows/publish.yml      publishes @hanzo/logo to npm
               .hanzo/workflows/deploy.yml       ships logo.hanzo.ai (Sites plane)
 
-**git.hanzo.ai is canonical; GitHub is a mirror.** `.github/workflows/` is empty.
-Every build, check and publish lives under `.hanzo/workflows/`, which the forge
-reads. It uses GitHub Actions syntax, so a workflow moves between the two by
+**Push to GitHub. The forge is a READ-ONLY pull mirror** — `git push` to it is
+refused with `Mirror Repository hanzoai/logo is read-only`, so the `native`
+remote is for reading the mirror's state, never for writing. GitHub holds the
+code; the forge holds the CI, because `.github/workflows/` is empty and every
+build, check and publish lives under `.hanzo/workflows/`, which only the forge
+reads. Both use GitHub Actions syntax, so a workflow moves between them by
 changing directory and nothing else.
+
+The consequence worth remembering: a push is not a deploy. Nothing runs until
+the mirror pulls, and that lag is the forge's, not yours.
 
 `publish.yml` is the SOLE publisher of `@hanzo/logo`. It fires when `version` in
 `package.json` changes on `main`, skips a version already on the registry, and
