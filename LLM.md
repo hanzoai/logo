@@ -56,6 +56,15 @@ of the telemetry client ships, and the only script this page loads stays
 same-origin instead of coming off a public CDN. `hz.js` posts to the same
 `api.hanzo.ai/v1/event` as every bundled Hanzo surface.
 
+**Known gap, upstream:** `hz.js` (through 0.3.11) cannot authenticate. It sends
+no `Authorization` header and no `?ingest_key=` query, while `/v1/event` answers
+`401 ingest_key_required` to an unattributed batch — so every event this page
+sends is currently refused. The npm client supports `ingestKey` on both the fetch
+and the beacon; the script form was never given the same. The fix belongs in
+`hanzoai/ui` `pkgs/event/hz.js` (read `data-ingest-key`, ride it the way
+`core.ts` already does), NOT in a bespoke script here — a second telemetry client
+is exactly what `hz.js` exists to prevent.
+
 ## Stack
 - TypeScript 5, ESM-only output
 - React (optional peer dep >= 16.8)
