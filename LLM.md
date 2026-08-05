@@ -14,21 +14,13 @@ One way, and it runs on our own stack:
 
     push  ->  github.com/hanzoai/logo          (a mirror)
       ->  git.hanzo.ai/hanzoai/logo             CANONICAL
-              .hanzo/workflows/sync-from-github.yml  pulls the mirror, every 10m
               .hanzo/workflows/publish.yml      publishes @hanzo/logo to npm
-              .hanzo/workflows/deploy.yml       builds ghcr.io/hanzoai/logo
-      ->  hanzoai/universe crs/logo.yaml        names the tag that is live
-      ->  hanzoai/operator                      reconciles the App
-      ->  hanzoai/static behind hanzoai/ingress serves logo.hanzo.ai
+              .hanzo/workflows/deploy.yml       ships logo.hanzo.ai (Sites plane)
 
 **git.hanzo.ai is canonical; GitHub is a mirror.** `.github/workflows/` is empty.
-Every build, check, publish and the sync itself lives under `.hanzo/workflows/`,
-which the forge reads. It uses GitHub Actions syntax, so a workflow moves between
-the two by changing directory and nothing else.
-
-The sync is a PULL: the forge runner reaches both ends, so nothing needs a
-credential aimed into the forge, and a public repo needs none at all. It
-fast-forwards only — a divergence fails loudly instead of force-pushing a side.
+Every build, check and publish lives under `.hanzo/workflows/`, which the forge
+reads. It uses GitHub Actions syntax, so a workflow moves between the two by
+changing directory and nothing else.
 
 `publish.yml` is the SOLE publisher of `@hanzo/logo`. It fires when `version` in
 `package.json` changes on `main`, skips a version already on the registry, and
@@ -39,22 +31,24 @@ publishing without that build ships every icon and no entry point. Needs
 
 ### The site
 
-`index.html` is the whole site: one self-contained page, inline CSS, no scripts
-and no subresources. `Dockerfile` copies it into `ghcr.io/hanzoai/static` — no
-build stage, because there is nothing to build. No GitHub Pages and no Cloudflare
-Pages: the repo used to push this page to a `gh-pages` branch, Pages was never
-configured for it, and `logo.hanzo.ai` has answered 404 from our own ingress ever
-since.
+`index.html` is the whole page: one self-contained file, inline CSS, no local
+subresources. It is a SITE, not an App — nothing here executes — so it ships on
+the Sites plane and there is no image, no CR and no pod:
 
-A build never deploys itself. `deploy.yml` publishes
-`ghcr.io/hanzoai/logo:<sha>`; a human then sets `spec.image.tag` in
-`hanzoai/universe` `infra/k8s/operator/crs/logo.yaml` and adds `- logo.yaml` to
-that directory's `kustomization.yaml`. The CR is inert until both are done, which
-is deliberate: an App promoted with an empty tag takes the host down instead of
-leaving it alone.
+    assemble out/  ->  POST /v1/projects/logo/deploy      (202, queued)
+                   ->  aws s3 sync out s3://<bucket>/<prefix>
+                   ->  POST …/deployments/<id>/complete   {"status":"live"}
 
-Order: publish an image -> set the tag -> add the line -> confirm the pod is
-Running.
+No GitHub Pages and no Cloudflare Pages: the repo used to push this page to a
+`gh-pages` branch, Pages was never configured for it, and `logo.hanzo.ai` has
+answered 404 from our own ingress ever since.
+
+`out/` is ASSEMBLED, not built — `index.html` plus `hz.js`, the script-tag form of
+`@hanzo/event`, copied out of `node_modules` at build time. That is the whole
+reason `@hanzo/event` is a devDependency here: the lockfile decides which version
+of the telemetry client ships, and the only script this page loads stays
+same-origin instead of coming off a public CDN. `hz.js` posts to the same
+`api.hanzo.ai/v1/event` as every bundled Hanzo surface.
 
 ## Stack
 - TypeScript 5, ESM-only output

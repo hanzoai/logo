@@ -1,19 +1,27 @@
 name: deploy
 
-# Builds logo.hanzo.ai and publishes the image the operator runs. This replaces
-# the GitHub Pages workflow the repo used to carry: Pages was never configured
-# for this repo, so that push updated a gh-pages branch nothing ever read and the
-# host has answered 404 from our ingress the whole time. The site is served by
-# hanzoai/static behind hanzoai/ingress now, so there is no Pages and no CF Pages
-# in the path.
+# logo.hanzo.ai is a SITE, not an App: a static export with no compute. It ships on the
+# Sites plane — enqueue, sync the bytes to S3, flip live. Not GitHub Pages, not
+# Cloudflare Pages, and not an image the cluster has to run to hand back files
+# that never execute.
 #
-# The image tag is the run's commit, and the operator CR in hanzoai/universe
-# names which tag is live — a build never deploys itself.
+#   build -> out
+#     -> POST /v1/projects/logo/deploy {"source":"git"}   (202, queued)
+#     -> aws s3 sync out s3://<bucket>/<prefix>        (bytes skip the API)
+#     -> POST .../deployments/<id>/complete {"status":"live"}
+#
+# Three steps because the bytes never pass through the API. BodyLimit is 16 MiB,
+# so an artifact POST of a real export is refused by fasthttp before any handler
+# runs — and it fails as an opaque 400 that reads like a malformed payload rather
+# than a size cap. cloud names the bucket and prefix in the 202, so CI writes
+# exactly where the site is served from; never hardcode them, prefix is
+# sitePrefix(org, slug) server-side and a local guess drifts the moment the org or
+# slug changes.
 
 on:
   push:
     branches: [main]
-    paths: ['index.html', 'Dockerfile', '.hanzo/workflows/deploy.yml']
+    paths: ['index.html', 'package.json', 'pnpm-lock.yaml', '.hanzo/workflows/deploy.yml']
   workflow_dispatch:
 
 concurrency:
@@ -21,31 +29,113 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  image:
-    # hanzo-build-linux-amd64, not ubuntu-latest. This file lives in
-    # .hanzo/workflows, which GitHub never reads -- git.hanzo.ai is the only
-    # thing that can run it, and the fleet deliberately advertises no generic
-    # ubuntu-* label (~1400 mirrored forks all ask for it; one bad job was
-    # retried ~520 times across 10 runners). An unmatched label is not an
-    # error here, it is silence: the job queues until the 24h timeout, so this
-    # deploy has never produced an image and nothing ever said so.
+  site:
+    # NOT ubuntu-latest. This file lives in .hanzo/workflows, which GitHub never
+    # reads — git.hanzo.ai is the only thing that can run it, and its fleet
+    # advertises hanzo-build-linux-amd64. An unmatched label is not an error here,
+    # it is silence: the job queues until the 24h timeout and nothing says so.
     runs-on: hanzo-build-linux-amd64
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
-      - name: build and push
-        env:
-          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # index.html is the whole page — one self-contained file, inline CSS, no
+      # local subresources — so there is nothing to compile. What IS assembled is
+      # the site directory: the page plus hz.js, the script-tag form of
+      # @hanzo/event. hz.js is COPIED OUT OF node_modules, never vendored and
+      # never loaded from a public CDN: the lockfile pins which version ships and
+      # the page keeps its only script same-origin.
+      - name: assemble the site
         run: |
           set -euo pipefail
-          if [ -z "${REGISTRY_TOKEN:-}" ]; then
-            echo "::error::REGISTRY_TOKEN is unset, so nothing was published. Add the org secret."
+          corepack enable
+          pnpm install --frozen-lockfile
+          rm -rf out && mkdir -p out
+          cp index.html out/index.html
+          cp node_modules/@hanzo/event/hz.js out/hz.js
+          test -s out/hz.js || { echo "::error::@hanzo/event/hz.js missing from the install"; exit 1; }
+          echo "assembled $(find out -type f | wc -l) files"
+
+      - name: enqueue the deployment
+        id: enqueue
+        env:
+          DEPLOY_TOKEN: ${{ secrets.HANZO_DEPLOY_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_TOKEN:-}" ]; then
+            echo "::error::HANZO_DEPLOY_TOKEN is unset — it is configured org-wide on the forge."
             exit 1
           fi
-          tag="$(git rev-parse --short HEAD)"
-          image="ghcr.io/hanzoai/logo:${tag}"
-          echo "${REGISTRY_TOKEN}" | docker login ghcr.io -u hanzo-dev --password-stdin
-          docker build -t "${image}" .
-          docker push "${image}"
-          echo "published ${image} — set spec.image.tag in universe crs/logo.yaml to ${tag}"
+          CODE=$(curl -sS -o /tmp/enq.json -w '%{http_code}' \
+            -X POST "https://api.hanzo.ai/v1/projects/logo/deploy" \
+            -H "Authorization: Bearer ${DEPLOY_TOKEN}" \
+            -H 'Content-Type: application/json' \
+            -d "{\"source\":\"git\",\"commit\":\"${GITHUB_SHA}\",\"branch\":\"main\"}")
+          # 202 Accepted is the success code: the deployment is queued, not live.
+          if [ "$CODE" != "202" ]; then
+            echo "::error::enqueue returned HTTP $CODE — does project 'logo' exist?"
+            head -c 600 /tmp/enq.json; exit 1
+          fi
+          echo "id=$(jq -r .id /tmp/enq.json)"         >> "$GITHUB_OUTPUT"
+          echo "bucket=$(jq -r .bucket /tmp/enq.json)" >> "$GITHUB_OUTPUT"
+          echo "prefix=$(jq -r .prefix /tmp/enq.json)" >> "$GITHUB_OUTPUT"
+          jq -c '{id,version,status,bucket,prefix}' /tmp/enq.json
+
+      - name: sync the export to S3
+        id: sync
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.SITES_S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SITES_S3_SECRET_ACCESS_KEY }}
+          BUCKET: ${{ steps.enqueue.outputs.bucket }}
+          PREFIX: ${{ steps.enqueue.outputs.prefix }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AWS_ACCESS_KEY_ID:-}" ] || [ -z "${AWS_SECRET_ACCESS_KEY:-}" ]; then
+            echo "::error::SITES_S3_* secrets unset — cannot sync. These are the hanzo-sites bucket credentials."
+            exit 1
+          fi
+          # CNAME is a GitHub Pages artifact. It means nothing to S3 and would ship
+          # a stale hostname claim into the bucket, so it does not travel.
+          rm -f out/CNAME
+          # --delete so a removed page actually disappears: without it the prefix
+          # only ever grows and deleted routes keep serving.
+          aws s3 sync out "s3://${BUCKET}/${PREFIX}" \
+            --endpoint-url https://s3.hanzo.ai --delete --only-show-errors
+          echo "files=$(find out -type f | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          echo "bytes=$(du -sk out | awk '{print $1*1024}')"  >> "$GITHUB_OUTPUT"
+
+      - name: flip it live
+        env:
+          DEPLOY_TOKEN: ${{ secrets.HANZO_DEPLOY_TOKEN }}
+          DEP: ${{ steps.enqueue.outputs.id }}
+          FILES: ${{ steps.sync.outputs.files }}
+          BYTES: ${{ steps.sync.outputs.bytes }}
+        run: |
+          set -euo pipefail
+          CODE=$(curl -sS -o /tmp/done.json -w '%{http_code}' \
+            -X POST "https://api.hanzo.ai/v1/projects/logo/deployments/${DEP}/complete" \
+            -H "Authorization: Bearer ${DEPLOY_TOKEN}" \
+            -H 'Content-Type: application/json' \
+            -d "{\"status\":\"live\",\"commit\":\"${GITHUB_SHA}\",\"files\":${FILES},\"bytes\":${BYTES}}")
+          if [ "$CODE" != "200" ]; then
+            echo "::error::complete returned HTTP $CODE"; head -c 600 /tmp/done.json; exit 1
+          fi
+          jq -c '{status,liveUrl,version,files,bytes}' /tmp/done.json
+
+      # A build that dies after the enqueue would leave the deployment "queued"
+      # and the project stuck "building" forever. Report the failure so cloud
+      # records an honest terminal state instead of a lie by omission.
+      - name: report a failed build
+        if: failure() && steps.enqueue.outputs.id != ''
+        env:
+          DEPLOY_TOKEN: ${{ secrets.HANZO_DEPLOY_TOKEN }}
+          DEP: ${{ steps.enqueue.outputs.id }}
+        run: |
+          curl -sS -X POST "https://api.hanzo.ai/v1/projects/logo/deployments/${DEP}/complete" \
+            -H "Authorization: Bearer ${DEPLOY_TOKEN}" -H 'Content-Type: application/json' \
+            -d '{"status":"error","message":"CI build or sync failed"}' >/dev/null || true
+          echo "marked deployment ${DEP} as error"
