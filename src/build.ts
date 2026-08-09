@@ -293,11 +293,13 @@ async function buildAll(): Promise<void> {
     console.log('\n📁 Web-standard named icons (dist/favicon/):');
     await generateIcon(faviconSVG, 'dist/favicon/android-chrome-192x192.png', 192);
     await generateIcon(faviconSVG, 'dist/favicon/android-chrome-512x512.png', 512);
-    await generateIcon(colorSVG, 'dist/favicon/apple-touch-icon.png', 180, {
-        addBackground: true, bgColor: '#000000', cornerRadius: 40,
+    // White ground, same as the favicon: a home screen or tile sitting next to the
+    // browser icon should be the same mark, not its negative.
+    await generateIcon(monoSVG, 'dist/favicon/apple-touch-icon.png', 180, {
+        addBackground: true, bgColor: '#ffffff', cornerRadius: 40,
     });
-    await generateIcon(whiteSVG, 'dist/favicon/mstile-150x150.png', 150, {
-        addBackground: true, bgColor: '#000000',
+    await generateIcon(monoSVG, 'dist/favicon/mstile-150x150.png', 150, {
+        addBackground: true, bgColor: '#ffffff',
     });
 
     // === APPLE TOUCH ICONS ===
