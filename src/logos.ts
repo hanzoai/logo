@@ -102,16 +102,23 @@ export function getMenuBarSVG(): string {
  * Optimized for small sizes (16px-64px) - no 3D accents
  */
 export function getFaviconSVG(): string {
-  // Simplified version without 3D accents for better scaling at small sizes
-  // Uses the core Hanzo "H" shape with padding for favicon context
+  // No 3D accents: they turn to mush at 16px, which is the size that matters.
+  //
+  // Black mark on white, not white on black. A tab strip is light in every
+  // default theme, so a dark ground reads as a blob with a hole in it, and the
+  // transparent variant disappears entirely — insights was serving a favicon
+  // whose 32x32 was 100% white pixels, and three other surfaces were serving one
+  // whose 48x48 was 100% black. Both were "correct" by checksum and invisible in
+  // a browser. White ground keeps the mark legible on light and dark chrome
+  // alike, because the tile itself supplies the contrast.
   return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="8" fill="#000000"/>
+  <rect width="64" height="64" rx="8" fill="#ffffff"/>
   <g transform="translate(8, 8) scale(0.716)">
-    <path d="M22.21 67V44.6369H0V67H22.21Z" fill="#ffffff"/>
-    <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="#ffffff"/>
-    <path d="M22.21 0H0V22.3184H22.21V0Z" fill="#ffffff"/>
-    <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="#ffffff"/>
-    <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="#ffffff"/>
+    <path d="M22.21 67V44.6369H0V67H22.21Z" fill="#000000"/>
+    <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="#000000"/>
+    <path d="M22.21 0H0V22.3184H22.21V0Z" fill="#000000"/>
+    <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="#000000"/>
+    <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="#000000"/>
   </g>
 </svg>`;
 }
