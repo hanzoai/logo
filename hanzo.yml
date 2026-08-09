@@ -1,0 +1,19 @@
+# Canonical CI/CD config for hanzoai/logo — the one file both the hanzoai/ci
+# reusable (.hanzo/workflows/cicd.yml) and platform.hanzo.ai read.
+#
+# GATE ONLY: @hanzo/logo is an npm package, and the logo site has its own lanes
+# already (.hanzo/workflows/publish.yml, deploy.yml). A second image build for
+# the same Dockerfile on the same push buys nothing.
+#
+# `pnpm test` here is `pnpm typecheck && pnpm build` — and the build half is the
+# real gate, because this package's output is GENERATED: `pnpm generate` runs
+# the compiled dist/build.js, which bakes the tuner's animation states into the
+# svg + animated.ts that every consumer imports. A break in the generator is a
+# break in the artifact, and it only shows when the generator is actually run.
+test:
+  - name: build
+    run: |
+      set -e
+      corepack enable
+      pnpm install --frozen-lockfile
+      pnpm test

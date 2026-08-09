@@ -1,19 +1,29 @@
 name: deploy
 
-# Builds logo.hanzo.ai and publishes the image the operator runs. This replaces
-# the GitHub Pages workflow the repo used to carry: Pages was never configured
-# for this repo, so that push updated a gh-pages branch nothing ever read and the
-# host has answered 404 from our ingress the whole time. The site is served by
-# hanzoai/static behind hanzoai/ingress now, so there is no Pages and no CF Pages
-# in the path.
+# logo.hanzo.ai is a SITE, not an App: a static export with no compute. It ships on the
+# Sites plane. Not GitHub Pages, not Cloudflare Pages, and not an image — baking
+# files that never execute into a container so a Go binary can serve them means an
+# image, a push, a tag pinned in a CR and running pods, all to hand back bytes.
 #
-# The image tag is the run's commit, and the operator CR in hanzoai/universe
-# names which tag is live — a build never deploys itself.
+#   build -> out
+#     -> sitedeploy
+#
+# The publish mechanics are NOT here. They are bin/sitedeploy in hanzoai/ci,
+# reached through its action, and every static surface in the fleet calls that one
+# script — ensure-project, enqueue, presigned per-file upload, complete. A
+# contract transcribed per repo is a contract that drifts, and this file used to
+# carry its own copy of every call. It also SELF-PROVISIONS: the project is
+# created idempotently before the enqueue, so committing this file is enough to
+# stand the site up.
+#
+# The one secret is HANZO_DEPLOY_TOKEN, which identifies us rather than granting
+# storage. It is set ON THE FORGE: this file lives under .hanzo/workflows/, which
+# only git.hanzo.ai reads, so GitHub's secret store is not in this path at all.
 
 on:
   push:
     branches: [main]
-    paths: ['index.html', 'Dockerfile', '.hanzo/workflows/deploy.yml']
+    paths: ['index.html', 'package.json', 'pnpm-lock.yaml', '.hanzo/workflows/deploy.yml']
   workflow_dispatch:
 
 concurrency:
@@ -21,24 +31,45 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  image:
-    runs-on: ubuntu-latest
+  site:
+    # NOT ubuntu-latest. This file lives in .hanzo/workflows, which GitHub never
+    # reads — git.hanzo.ai is the only thing that can run it, and its fleet
+    # advertises hanzo-build-linux-amd64. An unmatched label is not an error here,
+    # it is silence: the job queues until the 24h timeout and nothing says so.
+    runs-on: hanzo-build-linux-amd64
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
-      - name: build and push
-        env:
-          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # index.html is the whole page — one self-contained file, inline CSS, no
+      # local subresources — so there is nothing to compile. What IS assembled is
+      # the site directory: the page plus hz.js, the script-tag form of
+      # @hanzo/event. hz.js is COPIED OUT OF node_modules, never vendored and
+      # never loaded from a public CDN: the lockfile pins which version ships and
+      # the page keeps its only script same-origin.
+      - name: assemble the site
         run: |
           set -euo pipefail
-          if [ -z "${REGISTRY_TOKEN:-}" ]; then
-            echo "::error::REGISTRY_TOKEN is unset, so nothing was published. Add the org secret."
-            exit 1
-          fi
-          tag="$(git rev-parse --short HEAD)"
-          image="ghcr.io/hanzoai/logo:${tag}"
-          echo "${REGISTRY_TOKEN}" | docker login ghcr.io -u hanzo-dev --password-stdin
-          docker build -t "${image}" .
-          docker push "${image}"
-          echo "published ${image} — set spec.image.tag in universe crs/logo.yaml to ${tag}"
+          corepack enable
+          pnpm install --frozen-lockfile
+          rm -rf out && mkdir -p out
+          cp index.html out/index.html
+          cp node_modules/@hanzo/event/hz.js out/hz.js
+          test -s out/hz.js || { echo "::error::@hanzo/event/hz.js missing from the install"; exit 1; }
+          echo "assembled $(find out -type f | wc -l) files"
+
+      # ONE credential. The 202 carries a prefix-scoped, 30-minute presigned POST
+      # grant, so nothing here holds a bucket key. Do NOT add SITES_S3_* — that is
+      # the standing shared-bucket credential the grant replaced, and it could
+      # overwrite every other org's site.
+      - name: Publish to the Sites plane
+        uses: hanzoai/ci/.github/actions/sitedeploy@v1
+        with:
+          slug: logo
+          dir: out
+        env:
+          HANZO_DEPLOY_TOKEN: ${{ secrets.HANZO_DEPLOY_TOKEN }}

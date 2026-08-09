@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.11",
+  "version": "1.0.15",
   "packageManager": "pnpm@11.17.0",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
@@ -22,6 +22,11 @@
       "types": "./dist/logos.d.ts",
       "import": "./dist/logos.js",
       "require": "./dist/logos.js"
+    },
+    "./motion": {
+      "types": "./dist/motion.d.ts",
+      "import": "./dist/motion.js",
+      "require": "./dist/motion.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",
@@ -54,14 +59,13 @@
   ],
   "author": "Hanzo AI",
   "license": "MIT",
-  "dependencies": {
-    "sharp": "^0.34.4"
-  },
   "devDependencies": {
+    "@hanzo/event": "^0.3.11",
     "@types/minimatch": "^5.1.2",
     "@types/node": "^20.19.17",
     "@types/react": "^18.3.24",
     "react": "^18.3.1",
+    "sharp": "^0.34.4",
     "typescript": "^5.9.2"
   },
   "peerDependencies": {
