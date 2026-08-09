@@ -33,6 +33,38 @@ export const MARK_PATHS =
   '<path class="shade" fill="#DDDDDD" d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z"/>' +
   '<path d="M66.7198 67V44.6369H44.5098V67H66.7198Z"/>';
 
+/** House ensō viewBox — the shared 24-unit space Enso and Zen are drawn in. */
+export const HOUSE_MARK_VIEWBOX = '0 0 24 24';
+
+/**
+ * The two ensō house marks — the single source for every surface. Closed
+ * `currentColor` brush rings on a 24-unit viewBox, one stroke width (2.64) and
+ * round caps, so Enso and Zen sit at equal optical weight in a list.
+ *
+ * ZEN and ENSO are NOT the same glyph, and that is the whole point. Zen is the
+ * ensō (円相) left OPEN — the gap runs from ~3.5 to ~5.1 o'clock and the arc
+ * sweeps the long way round to leave it. Enso is the router that COMPLETES the
+ * circle by picking the right model, so its ring is CLOSED. Geometry is
+ * zenlm/logo's canonical EnsoLogoIcon/ZenLogoIcon scaled ×0.24 from their
+ * 100-unit space (r 37→8.88, stroke 11→2.64) — the same mark, not a redrawing.
+ * Draw these; never re-type a ring or thin them to a hairline.
+ */
+export const ENSO_MARK =
+  '<circle cx="12" cy="12" r="8.88" fill="none" stroke="currentColor" stroke-width="2.64" stroke-linecap="round"/>';
+export const ZEN_MARK =
+  '<path d="M15.8928 19.9824 A8.88 8.88 0 1 1 20.5368 14.448" fill="none" stroke="currentColor" stroke-width="2.64" stroke-linecap="round"/>';
+
+/** Family slug → house mark. `hanzo` is the block-H (`MARK_PATHS`, its own 67 viewBox). */
+export const HOUSE_MARKS: Record<string, string> = {
+  enso: ENSO_MARK,
+  zen: ZEN_MARK,
+};
+
+/** Enso or Zen as a complete `<svg>`, `currentColor`-inheriting. */
+export function getHouseMarkSVG(slug: 'enso' | 'zen'): string {
+  return `<svg viewBox="${HOUSE_MARK_VIEWBOX}" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">${HOUSE_MARKS[slug]}</svg>`;
+}
+
 /**
  * Generate Hanzo color SVG logo
  */
