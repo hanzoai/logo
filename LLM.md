@@ -28,12 +28,18 @@ changing directory and nothing else.
 The consequence worth remembering: a push is not a deploy. Nothing runs until
 the mirror pulls, and that lag is the forge's, not yours.
 
-`publish.yml` is the SOLE publisher of `@hanzo/logo`. It fires when `version` in
-`package.json` changes on `main`, skips a version already on the registry, and
-runs `pnpm test` first — typecheck, then build. The rendered images under `dist/`
-are tracked but the compiled `dist/*.js` and `dist/*.d.ts` are gitignored, so
-publishing without that build ships every icon and no entry point. Needs
-`NPM_TOKEN` as a forge secret.
+`publish.yml` is the SOLE publisher of `@hanzo/logo`. It fires on every push to
+`main`, skips a version already on the registry, and runs `pnpm test` first —
+typecheck, then build. The rendered images under `dist/` are tracked but the
+compiled `dist/*.js` and `dist/*.d.ts` are gitignored, so publishing without that
+build ships every icon and no entry point.
+
+It reads `NPM_TOKEN` from **KMS** at run time, not from a forge secret. The forge
+secret never existed — on this repo or the hanzoai org — and an absent secret
+interpolates to the empty string rather than failing, so the job authenticated as
+nobody and npmjs answered `ENEEDAUTH` with the tarball already built. That is why
+1.0.18 built clean and shipped nothing. `@hanzo/ui` reads the token from the same
+place; there is one way to reach npm, not two.
 
 ### The site
 
