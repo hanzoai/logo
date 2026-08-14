@@ -17,52 +17,40 @@ export const LOGO_SETTINGS: LogoSettings = {
 export const MARK_VIEWBOX = '0 0 67 67';
 
 /**
+ * The five body blocks of the Hanzo mark — four corner squares joined by the
+ * diagonal band. This is the geometry; everything else in this file is a way of
+ * painting it.
+ */
+export const MARK_BLOCKS = [
+  'M22.21 67V44.6369H0V67H22.21Z',
+  'M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z',
+  'M22.21 0H0V22.3184H22.21V0Z',
+  'M66.7198 0H44.5098V22.3184H66.7198V0Z',
+  'M66.7198 67V44.6369H44.5098V67H66.7198Z',
+];
+
+/** The two accent slivers that give the H its shaded depth. */
+const MARK_SHADE = [
+  'M0 44.6369L22.21 46.8285V44.6369H0Z',
+  'M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z',
+];
+
+/**
  * Raw block-H path geometry — the single source of the Hanzo mark.
- * The canonical mark is SEVEN paths: five fill-less body blocks (callers set
+ * The canonical mark is SEVEN paths: the five fill-less body blocks (callers set
  * their own `fill` — e.g. `@hanzo/brand` card generators, og images) plus the
- * two `class="shade"` accent slivers that give the H its shaded depth
- * (#DDDDDD in every shipped variant; restyle via `.shade` if needed).
+ * two `class="shade"` accent slivers (#DDDDDD in every shipped variant;
+ * restyle via `.shade` if needed).
  * Use this instead of re-typing the path data anywhere.
  */
 export const MARK_PATHS =
-  '<path d="M22.21 67V44.6369H0V67H22.21Z"/>' +
-  '<path class="shade" fill="#DDDDDD" d="M0 44.6369L22.21 46.8285V44.6369H0Z"/>' +
-  '<path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z"/>' +
-  '<path d="M22.21 0H0V22.3184H22.21V0Z"/>' +
-  '<path d="M66.7198 0H44.5098V22.3184H66.7198V0Z"/>' +
-  '<path class="shade" fill="#DDDDDD" d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z"/>' +
-  '<path d="M66.7198 67V44.6369H44.5098V67H66.7198Z"/>';
-
-/** House ensō viewBox — the 24-unit space the ensō is drawn in. */
-export const HOUSE_MARK_VIEWBOX = '0 0 24 24';
-
-/**
- * Enso — the single source for every surface that draws it. A `currentColor`
- * brush ring on a 24-unit viewBox, stroke 2.64 with round caps, so it carries
- * the optical weight of a lab's mark sitting beside it in a list.
- *
- * The ring is CLOSED, and that is the whole point: Enso is the router that
- * completes the circle by picking the right model. An ensō (円相) left OPEN is
- * a different glyph saying a different thing, never a variant of this one.
- * Geometry is a ×0.24 reduction of the 100-unit drawing (r 37→8.88, stroke
- * 11→2.64) — a scale, not a redrawing. Draw this; never re-type the ring or
- * thin it to a hairline.
- *
- * This package carries Hanzo's marks. Another maker's mark is theirs, and
- * belongs in the consuming app's mark table beside the other labs it draws.
- */
-export const ENSO_MARK =
-  '<circle cx="12" cy="12" r="8.88" fill="none" stroke="currentColor" stroke-width="2.64" stroke-linecap="round"/>';
-
-/** Family slug → house mark. `hanzo` is the block-H (`MARK_PATHS`, its own 67 viewBox). */
-export const HOUSE_MARKS: Record<string, string> = {
-  enso: ENSO_MARK,
-};
-
-/** A house mark as a complete `<svg>`, `currentColor`-inheriting. */
-export function getHouseMarkSVG(slug: 'enso'): string {
-  return `<svg viewBox="${HOUSE_MARK_VIEWBOX}" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">${HOUSE_MARKS[slug]}</svg>`;
-}
+  `<path d="${MARK_BLOCKS[0]}"/>` +
+  `<path class="shade" fill="#DDDDDD" d="${MARK_SHADE[0]}"/>` +
+  `<path d="${MARK_BLOCKS[1]}"/>` +
+  `<path d="${MARK_BLOCKS[2]}"/>` +
+  `<path d="${MARK_BLOCKS[3]}"/>` +
+  `<path class="shade" fill="#DDDDDD" d="${MARK_SHADE[1]}"/>` +
+  `<path d="${MARK_BLOCKS[4]}"/>`;
 
 /**
  * Generate Hanzo color SVG logo
@@ -80,16 +68,21 @@ export function getColorSVG(): string {
 }
 
 /**
- * Generate monochrome SVG logo (filled, for dark backgrounds)
+ * Generate monochrome SVG logo (filled, for dark backgrounds).
+ *
+ * One tone only. This is what a macOS menu-bar template image is cut from, and
+ * a template image is black plus alpha — a second tone in it is invalid, so the
+ * shade slivers are black here rather than the #DDDDDD they carry in the colour
+ * and white variants.
  */
 export function getMonoSVG(): string {
   return `<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">
     <path d="M22.21 67V44.6369H0V67H22.21Z" fill="#000000"/>
-    <path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="#222222"/>
+    <path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="#000000"/>
     <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="#000000"/>
     <path d="M22.21 0H0V22.3184H22.21V0Z" fill="#000000"/>
     <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="#000000"/>
-    <path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="#222222"/>
+    <path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="#000000"/>
     <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="#000000"/>
   </svg>`;
 }
@@ -134,28 +127,77 @@ export function getMenuBarSVG(): string {
 }
 
 /**
- * Generate favicon SVG (simplified black H on white background)
- * Optimized for small sizes (16px-64px) - no 3D accents
+ * Favicon geometry. The mark sits where it has always sat — translate(8,8)
+ * scale(0.7164) in a 64 box — and the rim is added OUTSIDE it, so nothing about
+ * the mark moves or shrinks.
+ *
+ * The rim is drawn by stroking each block and filling it in the same colour:
+ * overlapping those gives exactly the union of the blocks dilated by half the
+ * stroke, because dilation distributes over union. No boolean geometry.
+ *
+ * A mitred join at the band's two 45° tips would shoot a spike 2.61x the rim
+ * past the mark; a right angle only needs 1.41x. Capping the miter at 2 blunts
+ * those two tips and leaves every square corner sharp.
+ */
+const FAVICON_BOX = 64;
+const FAVICON_INK = 52;   // mark + rim, i.e. 81% of the box
+const FAVICON_RIM = 2;    // rim width outside the mark, in box units
+const FAVICON_MITER = 2;
+
+const FAVICON_SCALE = (FAVICON_INK - 2 * FAVICON_RIM) / 67;
+const FAVICON_SHIFT = (FAVICON_BOX - FAVICON_INK) / 2 + FAVICON_RIM;
+const FAVICON_STROKE = (2 * FAVICON_RIM) / FAVICON_SCALE;
+
+const faviconBody = (rim: string, core: string): string =>
+  `  <defs><g id="m">
+${MARK_BLOCKS.map((d) => `    <path d="${d}"/>`).join('\n')}
+  </g></defs>
+  <g transform="translate(${FAVICON_SHIFT} ${FAVICON_SHIFT}) scale(${FAVICON_SCALE.toFixed(4)})">
+    <use href="#m" ${rim} stroke-width="${FAVICON_STROKE.toFixed(4)}" stroke-miterlimit="${FAVICON_MITER}"/>
+    <use href="#m" ${core}/>
+  </g>`;
+
+/**
+ * favicon.svg — the mark on a TRANSPARENT ground. An icon that carries its own
+ * opaque tile fights every chrome it lands in: a black square on a light tab, a
+ * floating box on a dark one. This one takes its tone from the chrome instead —
+ * black on light, white on dark. A renderer that resolves no CSS still gets a
+ * white mark inside a black rim, so it is never invisible either way.
+ *
+ * The 3D accent slivers are dropped: they are depth cues that turn to noise
+ * below 64px and mean nothing in a one-tone icon.
  */
 export function getFaviconSVG(): string {
-  // No 3D accents: they turn to mush at 16px, which is the size that matters.
+  // A tab strip is light in every default theme, so a transparent mark that
+  // resolves no colour disappears, and a solid tile fights whatever chrome it
+  // lands in. Both failures shipped: one surface served a 32x32 that was 100%
+  // white pixels, three others a 48x48 that was 100% black. Each was correct by
+  // checksum and invisible in a browser.
   //
-  // Black mark on white, not white on black. A tab strip is light in every
-  // default theme, so a dark ground reads as a blob with a hole in it, and the
-  // transparent variant disappears entirely — insights was serving a favicon
-  // whose 32x32 was 100% white pixels, and three other surfaces were serving one
-  // whose 48x48 was 100% black. Both were "correct" by checksum and invisible in
-  // a browser. White ground keeps the mark legible on light and dark chrome
-  // alike, because the tile itself supplies the contrast.
-  return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-  <rect width="64" height="64" rx="8" fill="#ffffff"/>
-  <g transform="translate(8, 8) scale(0.716)">
-    <path d="M22.21 67V44.6369H0V67H22.21Z" fill="#000000"/>
-    <path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="#000000"/>
-    <path d="M22.21 0H0V22.3184H22.21V0Z" fill="#000000"/>
-    <path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="#000000"/>
-    <path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="#000000"/>
-  </g>
+  // So the tone is asked of the chrome, and a white core inside a black rim is
+  // what a renderer gets when it cannot ask. The rim is the fallback rather
+  // than the primary, because a white fill with an outline alone turns to grey
+  // mush at 16px on a light ground.
+  return `<svg viewBox="0 0 ${FAVICON_BOX} ${FAVICON_BOX}" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .core { fill: #ffffff }
+    .rim { fill: #000000; stroke: #000000 }
+    @media (prefers-color-scheme: light) { .core { fill: #000000 } }
+    @media (prefers-color-scheme: dark) { .rim { fill: #ffffff; stroke: #ffffff } }
+  </style>
+${faviconBody('class="rim"', 'class="core"')}
+</svg>`;
+}
+
+/**
+ * Raster source for every generated PNG and .ico. Same silhouette, same
+ * placement, but the tone is fixed: a PNG cannot ask what it was drawn onto, so
+ * it always wears the rim — white core so it reads on dark, black rim so it
+ * reads on light.
+ */
+export function getFaviconRasterSVG(): string {
+  return `<svg viewBox="0 0 ${FAVICON_BOX} ${FAVICON_BOX}" xmlns="http://www.w3.org/2000/svg">
+${faviconBody('fill="#000000" stroke="#000000"', 'fill="#ffffff"')}
 </svg>`;
 }
 

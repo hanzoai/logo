@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
-import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getWhiteSVG } from './logos.js';
+import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG } from './logos.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
 // (e.g. a wordmark) that only some brands define, without a hard import.
 import * as marks from './logos.js';
@@ -207,6 +207,10 @@ async function buildAll(): Promise<void> {
     const monoSVG = getMonoSVG();
     const menuBarSVG = getMenuBarSVG();
     const faviconSVG = getFaviconSVG();
+    // Every raster comes off this one, not off favicon.svg: librsvg resolves the
+    // light branch of favicon.svg's media query, which would bake a solid black
+    // mark into PNGs that then vanish on dark chrome.
+    const faviconRasterSVG = getFaviconRasterSVG();
     const whiteSVG = getWhiteSVG();
 
     // Ensure dist directories exist
@@ -262,7 +266,7 @@ async function buildAll(): Promise<void> {
     console.log('\n📁 Favicons (dist/favicon/):');
     const faviconSizes = [16, 32, 48, 64, 96, 128, 192, 256, 512];
     for (const size of faviconSizes) {
-        await generateIcon(faviconSVG, `dist/favicon/favicon-${size}.png`, size);
+        await generateIcon(faviconRasterSVG, `dist/favicon/favicon-${size}.png`, size);
     }
     // Also generate with black background versions
     for (const size of [16, 32, 48]) {
@@ -290,11 +294,17 @@ async function buildAll(): Promise<void> {
     // The exact filenames tools/browsers look for: android-chrome-*, the
     // default apple-touch-icon.png, and the Windows tile. Same art, canonical
     // names, so a project can copy dist/favicon/* verbatim.
+    // All transparent, all the rimmed mark: a home screen or launcher fills the
+    // alpha with its own colour, and the rim is what makes either fill safe —
+    // iOS fills black and the white core reads, a light launcher fills white and
+    // the black rim reads. dist/favicon/favicon-bg-*.png stays as the explicit
+    // black-tile variant for anywhere a tile is actually wanted.
     console.log('\n📁 Web-standard named icons (dist/favicon/):');
-    await generateIcon(faviconSVG, 'dist/favicon/android-chrome-192x192.png', 192);
-    await generateIcon(faviconSVG, 'dist/favicon/android-chrome-512x512.png', 512);
-    // White ground, same as the favicon: a home screen or tile sitting next to the
-    // browser icon should be the same mark, not its negative.
+    await generateIcon(faviconRasterSVG, 'dist/favicon/android-chrome-192x192.png', 192);
+    await generateIcon(faviconRasterSVG, 'dist/favicon/android-chrome-512x512.png', 512);
+    // A home screen icon and a Windows tile are placed ON a surface rather than
+    // in a tab strip, and iOS composites a transparent one onto black. So these
+    // two keep a ground, and it is white, matching what sits beside them.
     await generateIcon(monoSVG, 'dist/favicon/apple-touch-icon.png', 180, {
         addBackground: true, bgColor: '#ffffff', cornerRadius: 40,
     });
@@ -303,14 +313,12 @@ async function buildAll(): Promise<void> {
     });
 
     // === APPLE TOUCH ICONS ===
+    // Square and transparent, like the 180 above. iOS applies its own superellipse
+    // mask, so rounding the source corners here only rounds them twice.
     console.log('\n📁 Apple Touch Icons (dist/apple/):');
     const appleSizes = [57, 60, 72, 76, 114, 120, 144, 152, 167, 180];
     for (const size of appleSizes) {
-        await generateIcon(colorSVG, `dist/apple/apple-touch-icon-${size}.png`, size, {
-            addBackground: true,
-            bgColor: '#000000',
-            cornerRadius: Math.floor(size * 0.156) // iOS corner radius
-        });
+        await generateIcon(faviconRasterSVG, `dist/apple/apple-touch-icon-${size}.png`, size);
     }
 
     // === OG GRAPH IMAGES ===
