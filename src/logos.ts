@@ -52,6 +52,16 @@ export const MARK_PATHS =
   `<path class="shade" fill="#DDDDDD" d="${MARK_SHADE[1]}"/>` +
   `<path d="${MARK_BLOCKS[4]}"/>`;
 
+/** The ensō — Enso's mark. Closed: the router completes the circle.
+ *  One stroke in currentColor on the shared 24 viewBox. Zen's mark is Zoo's. */
+export const ENSO_MARK =
+  '<circle cx="12" cy="12" r="8.88" fill="none" stroke="currentColor" stroke-width="2.64" stroke-linecap="round"/>';
+
+/** Family slug → house mark. `hanzo` is the block-H, on its own 67 viewBox. */
+export const HOUSE_MARKS: Record<string, string> = {
+  enso: ENSO_MARK,
+};
+
 /**
  * Generate Hanzo color SVG logo
  */
