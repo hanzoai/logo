@@ -60,7 +60,6 @@
   "author": "Hanzo AI",
   "license": "MIT",
   "devDependencies": {
-    "@hanzo/event": "^0.3.11",
     "@types/minimatch": "^5.1.2",
     "@types/node": "^20.19.17",
     "@types/react": "^18.3.24",
