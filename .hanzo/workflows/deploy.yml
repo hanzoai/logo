@@ -50,20 +50,15 @@ jobs:
           node-version: '22'
 
       # index.html is the whole page — one self-contained file, inline CSS, no
-      # local subresources — so there is nothing to compile. What IS assembled is
-      # the site directory: the page plus hz.js, the script-tag form of
-      # @hanzo/event. hz.js is COPIED OUT OF node_modules, never vendored and
-      # never loaded from a public CDN: the lockfile pins which version ships and
-      # the page keeps its only script same-origin.
+      # local subresources — so there is nothing to compile and nothing to copy
+      # beside it. The tag comes from api.hanzo.ai/v1/event.js, which is the one
+      # hosted tag and the one the console and hanzo.app stamp into a published
+      # site, so this page installs it the same way every other surface does.
       - name: assemble the site
         run: |
           set -euo pipefail
-          corepack enable
-          pnpm install --frozen-lockfile
           rm -rf out && mkdir -p out
           cp index.html out/index.html
-          cp node_modules/@hanzo/event/hz.js out/hz.js
-          test -s out/hz.js || { echo "::error::@hanzo/event/hz.js missing from the install"; exit 1; }
           echo "assembled $(find out -type f | wc -l) files"
 
       # ONE credential. The 202 carries a prefix-scoped, 30-minute presigned POST

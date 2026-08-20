@@ -122,12 +122,12 @@
   </div>
   <div class="footer">&copy; 2025 Hanzo AI. All rights reserved.</div>
 
-  <!-- hz.js is the script-tag form of @hanzo/event — the SAME client and the
-       SAME wire as every bundled Hanzo surface, POSTing to api.hanzo.ai/v1/event.
-       This page has no bundler, so it gets the script rather than the module.
-       It is served from /hz.js, not a public CDN: CI copies it out of
-       node_modules at build time, so the lockfile decides which version ships and
-       the only script this page loads is same-origin. -->
-  <script async src="/hz.js" data-product="logo" data-host="https://api.hanzo.ai"></script>
+  <!-- The hosted tag, from the origin that eats the events: one host to allowlist
+       for both the script and the beacon, and it versions with the door it posts
+       to. It also carries the site's tag config from /v1/tags, so any pixel this
+       page needs is configured on the project rather than pasted in here.
+       data-key is a publishable pk- and this page has none yet, so the tag is
+       inert until one is stamped in. -->
+  <script defer src="https://api.hanzo.ai/v1/event.js" data-product="logo"></script>
 </body>
 </html>
