@@ -18,9 +18,9 @@ name: deploy
 #
 # The deploy key is in KMS and the action reads it there, so this file names no
 # token — only the KMS client identity that opens it. It used to pass
-# secrets.HANZO_DEPLOY_TOKEN, a forge org secret holding a key that had stopped
+# secrets.HANZO_DEPLOY_TOKEN, a Hanzo Git org secret holding a key that had stopped
 # resolving, and a secret nobody can read back is a secret nobody can tell is
-# dead. Both credentials are set ON THE FORGE: this file lives under
+# dead. Both credentials are set ON GIT.HANZO.AI: this file lives under
 # .hanzo/workflows/, which only git.hanzo.ai reads, so GitHub's secret store is
 # not in this path at all.
 
