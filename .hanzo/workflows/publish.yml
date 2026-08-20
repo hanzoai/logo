@@ -58,7 +58,7 @@ jobs:
         #
         # KMS is where a secret lives. The token is read at run time with the same
         # machine identity the rest of the fleet uses, so there is nothing new to
-        # rotate and no npm credential is stored on the forge. @hanzo/ui's
+        # rotate and no npm credential is stored on Hanzo Git. @hanzo/ui's
         # publish.yml reads it from the same place — one way, not two.
         env:
           KMS_CLIENT_ID: ${{ secrets.KMS_CLIENT_ID }}
