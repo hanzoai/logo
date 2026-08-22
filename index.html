@@ -127,7 +127,9 @@
        to. It also carries the site's tag config from /v1/tags, so any pixel this
        page needs is configured on the project rather than pasted in here.
        data-key is a publishable pk- and this page has none yet, so the tag is
-       inert until one is stamped in. -->
-  <script defer src="https://api.hanzo.ai/v1/event.js" data-product="logo"></script>
+       inert until one is stamped in. The tag sits UNDER /v1/event rather than
+       beside it: /v1/event.js was a sibling of that prefix, which the fleet
+       routed nowhere, and it 404s. -->
+  <script defer src="https://api.hanzo.ai/v1/event/tag.js" data-product="logo"></script>
 </body>
 </html>
