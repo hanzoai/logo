@@ -121,6 +121,31 @@ export function getWhiteSVG(): string {
 }
 
 /**
+ * The mark for a LIGHT page: a black H on a white ground.
+ *
+ * This is the one the house asks for — white background, black H — and until
+ * now the package could not paint it. `getColorSVG()` and `getWhiteSVG()` are
+ * byte-identical white-on-nothing, so the default `<HanzoLogo />` was invisible
+ * on a white page and every consumer worked around it (industries reached for
+ * `variant="mono"` plus an invert filter).
+ *
+ * Built from MARK_BLOCKS and MARK_SHADE rather than retyped, so the geometry
+ * has one home. The shade mirrors the relationship the other variants use — the
+ * slivers sit a shade off the body, so a black body takes a slightly lighter
+ * grey, exactly as a white body takes a slightly darker one.
+ */
+export function getLightSVG(): string {
+  const body = (d: string) => `<path d="${d}" fill="#000000"/>`;
+  const shade = (d: string) => `<path class="shade" d="${d}" fill="#222222"/>`;
+  return `<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">` +
+    `<rect width="67" height="67" fill="#ffffff"/>` +
+    body(MARK_BLOCKS[0]) + shade(MARK_SHADE[0]) + body(MARK_BLOCKS[1]) +
+    body(MARK_BLOCKS[2]) + body(MARK_BLOCKS[3]) + shade(MARK_SHADE[1]) +
+    body(MARK_BLOCKS[4]) +
+  `</svg>`;
+}
+
+/**
  * Generate monochrome SVG for menu bar (filled, tightly cropped)
  */
 export function getMenuBarSVG(): string {
@@ -225,6 +250,9 @@ export function getLogoDataUrl(options: LogoOptions = {}): string {
     case 'white':
       svg = getWhiteSVG();
       break;
+    case 'light':
+      svg = getLightSVG();
+      break;
     case 'favicon':
       svg = getFaviconSVG();
       break;
@@ -249,6 +277,9 @@ export function getLogoBase64(options: LogoOptions = {}): string {
       break;
     case 'white':
       svg = getWhiteSVG();
+      break;
+    case 'light':
+      svg = getLightSVG();
       break;
     case 'favicon':
       svg = getFaviconSVG();
@@ -282,6 +313,8 @@ export function getLogo(options: LogoOptions = {}): string {
           return getMonoSVG();
         case 'white':
           return getWhiteSVG();
+        case 'light':
+          return getLightSVG();
         case 'favicon':
           return getFaviconSVG();
         default:

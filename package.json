@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "packageManager": "pnpm@11.17.0",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
@@ -32,7 +32,16 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.js",
       "require": "./dist/react.js"
-    }
+    },
+    "./favicon.svg": "./dist/favicon.svg",
+    "./favicon.ico": "./dist/favicon.ico",
+    "./apple-touch-icon.png": "./dist/favicon/apple-touch-icon.png",
+    "./logo.svg": "./dist/logo.svg",
+    "./logo-light.svg": "./dist/logo-light.svg",
+    "./logo-mono.svg": "./dist/logo-mono.svg",
+    "./logo-white.svg": "./dist/logo-white.svg",
+    "./svg/*": "./svg/*",
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "build": "pnpm clean && pnpm compile && pnpm build:cli && pnpm generate",

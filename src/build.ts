@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
-import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG } from './logos.js';
+import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG, getLightSVG } from './logos.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
 // (e.g. a wordmark) that only some brands define, without a hard import.
 import * as marks from './logos.js';
@@ -226,9 +226,10 @@ async function buildAll(): Promise<void> {
     fs.writeFileSync('dist/logo.svg', colorSVG);
     fs.writeFileSync('dist/logo-mono.svg', monoSVG);
     fs.writeFileSync('dist/logo-white.svg', whiteSVG);
+    fs.writeFileSync('dist/logo-light.svg', getLightSVG());
     fs.writeFileSync('dist/logo-menubar.svg', menuBarSVG);
     fs.writeFileSync('dist/favicon.svg', faviconSVG);
-    console.log('✓ Generated 5 SVG sources\n');
+    console.log('✓ Generated 6 SVG sources\n');
 
     // Optional wordmark — brands whose logos.ts exports getWordmarkSVG (a wide
     // logotype, distinct from the square icon mark) ship it as SVG + aspect-
