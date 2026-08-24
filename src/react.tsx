@@ -69,6 +69,11 @@ export const HanzoLogo: React.FC<HanzoLogoProps> = ({
     case 'light':
       svg = getLightSVG();
       break;
+    case 'current':
+      // Inherits the surrounding text colour, so an inline mark needs no filter
+      // and no second asset per theme.
+      svg = getMenuBarSVG();
+      break;
     case 'favicon':
       svg = getFaviconSVG();
       break;
