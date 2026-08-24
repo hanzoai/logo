@@ -253,6 +253,9 @@ export function getLogoDataUrl(options: LogoOptions = {}): string {
     case 'light':
       svg = getLightSVG();
       break;
+    case 'current':
+      svg = getMenuBarSVG();
+      break;
     case 'favicon':
       svg = getFaviconSVG();
       break;
@@ -280,6 +283,9 @@ export function getLogoBase64(options: LogoOptions = {}): string {
       break;
     case 'light':
       svg = getLightSVG();
+      break;
+    case 'current':
+      svg = getMenuBarSVG();
       break;
     case 'favicon':
       svg = getFaviconSVG();
@@ -315,6 +321,8 @@ export function getLogo(options: LogoOptions = {}): string {
           return getWhiteSVG();
         case 'light':
           return getLightSVG();
+        case 'current':
+          return getMenuBarSVG();
         case 'favicon':
           return getFaviconSVG();
         default:
