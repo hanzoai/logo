@@ -27,7 +27,20 @@ name: deploy
 on:
   push:
     branches: [main]
-    paths: ['index.html', 'package.json', 'pnpm-lock.yaml', '.hanzo/workflows/deploy.yml']
+    # NO `paths:` filter. It was an optimisation for a job that installed
+    # dependencies; assembling this site is now `cp index.html out/`, so the
+    # filter guards nothing and two of the paths it named (package.json,
+    # pnpm-lock.yaml) are not read by the job at all.
+    #
+    # What it DID do was lose a deploy. A merge commit's changed-path set is
+    # computed against its FIRST PARENT, so the merge that converged this repo's
+    # two mains — the commit that finally put the tag fix on the line that
+    # deploys — matched nothing and started no run. The fix sat in git, complete,
+    # and logo.hanzo.app served the old bytes.
+    #
+    # A filter that can veto the job before it looks at the tree is a way to lose
+    # a deploy, which is the same reason hanzoai/ui's publish.yml carries none.
+    # The concurrency group below already collapses a burst to its newest commit.
   workflow_dispatch:
 
 concurrency:
