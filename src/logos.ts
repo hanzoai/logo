@@ -243,7 +243,7 @@ ${faviconBody('fill="#000000" stroke="#000000"', 'fill="#ffffff"')}
  * Get logo as data URL
  */
 export function getLogoDataUrl(options: LogoOptions = {}): string {
-  const { variant = 'color' } = options;
+  const { variant = 'current' } = options;
   let svg = '';
 
   switch (variant) {
@@ -262,8 +262,11 @@ export function getLogoDataUrl(options: LogoOptions = {}): string {
     case 'favicon':
       svg = getFaviconSVG();
       break;
-    default:
+    case 'color':
       svg = getColorSVG();
+      break;
+    default:
+      svg = getMenuBarSVG();
   }
 
   const base64 = btoa(unescape(encodeURIComponent(svg)));
@@ -274,7 +277,7 @@ export function getLogoDataUrl(options: LogoOptions = {}): string {
  * Get logo as base64 string
  */
 export function getLogoBase64(options: LogoOptions = {}): string {
-  const { variant = 'color' } = options;
+  const { variant = 'current' } = options;
   let svg = '';
 
   switch (variant) {
@@ -293,8 +296,11 @@ export function getLogoBase64(options: LogoOptions = {}): string {
     case 'favicon':
       svg = getFaviconSVG();
       break;
-    default:
+    case 'color':
       svg = getColorSVG();
+      break;
+    default:
+      svg = getMenuBarSVG();
   }
 
   return btoa(unescape(encodeURIComponent(svg)));
@@ -304,7 +310,7 @@ export function getLogoBase64(options: LogoOptions = {}): string {
  * Get logo in requested format
  */
 export function getLogo(options: LogoOptions = {}): string {
-  const { variant = 'color', format = 'svg' } = options;
+  const { variant = 'current', format = 'svg' } = options;
   if (variant === 'animated') {
     if (format === 'dataUrl') return getAnimatedDataUrl();
     if (format === 'base64') return btoa(unescape(encodeURIComponent(getAnimatedSVG())));
@@ -328,8 +334,10 @@ export function getLogo(options: LogoOptions = {}): string {
           return getMenuBarSVG();
         case 'favicon':
           return getFaviconSVG();
-        default:
+        case 'color':
           return getColorSVG();
+        default:
+          return getMenuBarSVG();
       }
   }
 }

@@ -9,6 +9,12 @@ export interface LogoSettings {
   };
 }
 
+/**
+ * `current` is the default: the mark inherits the surrounding text colour, so it
+ * is legible on any ground and a page needs no second asset per theme. The rest
+ * name a fixed ink — `color` and `white` are white, `mono` is black, `light`
+ * carries its own white ground.
+ */
 export type LogoVariant = 'color' | 'light' | 'current' | 'mono' | 'white' | 'favicon' | 'animated';
 export type LogoFormat = 'svg' | 'dataUrl' | 'base64';
 
