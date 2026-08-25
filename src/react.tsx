@@ -32,7 +32,7 @@ export interface HanzoLogoProps {
  * ```
  */
 export const HanzoLogo: React.FC<HanzoLogoProps> = ({
-  variant = 'color',
+  variant = 'current',
   size = 64,
   className,
   style,
@@ -80,8 +80,11 @@ export const HanzoLogo: React.FC<HanzoLogoProps> = ({
     case 'animated':
       svg = getAnimatedSVG();
       break;
-    default:
+    case 'color':
       svg = getColorSVG();
+      break;
+    default:
+      svg = getMenuBarSVG();
   }
 
   const sizeStyle = typeof size === 'number'
