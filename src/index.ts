@@ -8,3 +8,4 @@ export * from './logos.js';
 export * from './motion.js';
 export * from './types.js';
 export * from './react.js';
+export * from './wordmarks.js';
