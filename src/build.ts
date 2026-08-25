@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
-import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG, getLightSVG } from './logos.js';
+import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG, getLightSVG, getAdaptiveSVG } from './logos.js';
 import { ANIMATED_SVG } from './animated.js';
 import { WORDMARK_NAMES, getWordmarkSVG } from './wordmarks.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
@@ -225,7 +225,11 @@ async function buildAll(): Promise<void> {
 
     // Save SVG sources
     console.log('📁 SVG Sources:');
-    fs.writeFileSync('dist/logo.svg', colorSVG);
+    // The unqualified name carries the unqualified answer, the same one
+    // getLogo({}) gives: currentColor, legible on any ground. It used to be
+    // byte-identical to logo-white.svg — one file under two names, and the
+    // name a reader reaches for first was the one that vanishes on paper.
+    fs.writeFileSync('dist/logo.svg', getAdaptiveSVG());
     fs.writeFileSync('dist/logo-mono.svg', monoSVG);
     fs.writeFileSync('dist/logo-white.svg', whiteSVG);
     fs.writeFileSync('dist/logo-light.svg', getLightSVG());
