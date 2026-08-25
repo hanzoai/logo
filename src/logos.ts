@@ -165,6 +165,31 @@ export function getMenuBarSVG(): string {
 }
 
 /**
+ * The mark as a STANDALONE FILE, which is a different problem from the mark
+ * inline in a page. An `<img>` gives an SVG no parent to inherit from, so
+ * `currentColor` there resolves to the initial colour — black — whatever the
+ * host page's scheme is (measured in Chromium, both schemes, black both times).
+ * A file therefore has to carry its own answer, and a `<style>` block inside
+ * the document is honoured because the SVG *is* a document and receives the
+ * UA's colour-scheme. Black is the fallback rather than white because a reader
+ * that drops the style — GitHub markdown strips it — is nearly always showing
+ * the mark on paper or on white.
+ */
+export function getAdaptiveSVG(): string {
+  const body = MARK_BLOCKS.map((d) => `<path d="${d}"/>`).join('\n    ');
+  const shade = MARK_SHADE.map((d) => `<path class="s" d="${d}"/>`).join('\n    ');
+  return `<svg viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">
+    <style>
+      path{fill:#000000}
+      .s{fill:#222222}
+      @media (prefers-color-scheme:dark){path{fill:#ffffff}.s{fill:#dddddd}}
+    </style>
+    ${body}
+    ${shade}
+  </svg>`;
+}
+
+/**
  * Favicon geometry. The mark sits where it has always sat — translate(8,8)
  * scale(0.7164) in a 64 box — and the rim is added OUTSIDE it, so nothing about
  * the mark moves or shrinks.
