@@ -3,10 +3,38 @@
 Official Hanzo logo package. Provides SVG logos as inline strings, React components, a pure-CSS brand motion layer, and a build pipeline for generating favicons, Apple touch icons, dock icons, and menu bar assets. Published as `@hanzo/logo` on npm (bump `version` on `main` → CI publishes).
 
 ## Canon
-The Hanzo mark is the **7-path shaded H** (67x67 viewBox): five body blocks + two
-`class="shade"` accent slivers (#DDDDDD). `MARK_PATHS` in `src/logos.ts` is the one
-source of the geometry — every variant (color/mono/white/menubar/animated/motion)
-renders it. The flat 5-path H is only for tiny favicons (`getFaviconSVG`).
+The Hanzo mark is the **7-path shaded H** (67x67 viewBox): five body blocks
+(`MARK_BLOCKS`) + two `class="shade"` accent slivers (`MARK_SHADE`, #DDDDDD).
+Those two arrays in `src/logos.ts` are the one source of the geometry — every
+variant renders them, and `MARK_PATHS` is the pre-baked string built from them
+for a caller that wants the markup whole. The flat 5-path H is only for tiny
+favicons (`getFaviconSVG`).
+
+**The unqualified answer inherits.** `getLogo({})`, `getLogoDataUrl()`,
+`getLogoBase64()` and `<HanzoLogo>` with no variant all give the currentColor
+mark, so a caller who names nothing gets one that is legible on any ground.
+`color` is a named variant rather than the fall-through; it is white, and it
+used to be what you got by naming nothing — invisible on a white page.
+
+**A FILE is a different problem from the same mark inline.** An `<img>` gives an
+SVG no parent to inherit from, so `currentColor` there resolves to the initial
+colour — measured in Chromium under both schemes, black both times. So
+`dist/logo.svg` is `getAdaptiveSVG()`: black, white under
+`prefers-color-scheme: dark`, carried in a `<style>` block the SVG document
+honours itself. Four shipped files, four distinct artifacts, no duplicate —
+`logo.svg` adapts, `logo-white.svg` is white, `logo-mono.svg` is black,
+`logo-light.svg` carries its own white ground. `logo.svg` and `logo-white.svg`
+were byte-identical until this was fixed.
+
+**The wordmarks are OUTLINES, one per product.** `src/wordmarks.ts` holds 16
+(Hanzo, Hanzo AI, Hanzo ID, … plus Lux, Pars, Zoo), cut from Zen at wght 606 and
+shaped through HarfBuzz so pair spacing is the font's own GPOS kerning.
+`getWordmarkSVG(name)` returns **null** for a name with no outline rather than
+falling back to `<text>` — a silent fallback is how a page ends up setting the
+brand in Arial. Adding a name is one line in `scripts/wordmarks.py` plus a
+re-run; the generator is deliberately not in `build`, because outlines are
+static data and making every build need Python to reproduce unchanging bytes is
+a cost with no payer.
 
 ## How this ships
 
@@ -93,7 +121,9 @@ src/
               # Framework-free strings for Svelte/Tamagui/plain HTML.
   animated.ts # ANIMATED_SVG — self-contained interactive mark (fold-in → hover
               # turn → press squash)
-  types.ts    # LogoVariant (color|mono|white|favicon|animated), LogoFormat, LogoOptions
+  types.ts    # LogoVariant (current|color|light|mono|white|favicon|animated),
+              # LogoFormat, LogoOptions. `current` is the default.
+  wordmarks.ts # 16 outlined per-product wordmarks + getWordmarkSVG
   react.tsx   # HanzoLogo (variant + `animated` motion-shell prop), HanzoFavicon
   build.ts    # CLI build script for generating all icon variants (brand-neutral,
               # reads package.json `brand`)
@@ -121,7 +151,10 @@ import { MOTION_CSS, getMotionHTML } from '@hanzo/logo/motion' // Svelte/Tamagui
 ```
 
 ## Notes
-- Variants: color (white fill + shade), mono (black fill + shade), white, menubar
-  (currentColor), favicon (simplified 5-path for 16-64px), animated (interactive)
+- Variants: current (currentColor — THE DEFAULT), color (white fill + shade),
+  mono (black fill + shade), white, light (white ground + black H), favicon
+  (simplified 5-path for 16-64px), animated (interactive). `getMenuBarSVG` is
+  what `current` renders; the name is a place rather than the value, so prefer
+  the variant.
 - Release: bump the patch in `package.json`, merge to `main`. There is no tag.
 - `CLAUDE.md`, `AGENTS.md`, `QWEN.md`, `GEMINI.md` are all symlinks to this file
