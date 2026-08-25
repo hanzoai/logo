@@ -14,6 +14,7 @@ import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG, getLightSVG } from './logos.js';
 import { ANIMATED_SVG } from './animated.js';
+import { WORDMARK_NAMES, getWordmarkSVG } from './wordmarks.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
 // (e.g. a wordmark) that only some brands define, without a hard import.
 import * as marks from './logos.js';
@@ -234,6 +235,12 @@ async function buildAll(): Promise<void> {
     // already drifted.
     fs.writeFileSync('svg/hanzo-mark-animated.svg', ANIMATED_SVG);
     fs.writeFileSync('dist/logo-animated.svg', ANIMATED_SVG);
+    // One file per wordmark: the table is ~143 KB, and a page needs one name.
+    fs.mkdirSync('dist/wordmarks', { recursive: true });
+    for (const name of WORDMARK_NAMES) {
+        const svg = getWordmarkSVG(name);
+        if (svg) fs.writeFileSync(`dist/wordmarks/${name.toLowerCase().replace(/ /g, '-')}.svg`, svg);
+    }
     fs.writeFileSync('dist/logo-menubar.svg', menuBarSVG);
     fs.writeFileSync('dist/favicon.svg', faviconSVG);
     console.log('✓ Generated 6 SVG sources\n');
