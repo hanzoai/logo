@@ -13,6 +13,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 import { getColorSVG, getMonoSVG, getMenuBarSVG, getFaviconSVG, getFaviconRasterSVG, getWhiteSVG, getLightSVG } from './logos.js';
+import { ANIMATED_SVG } from './animated.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
 // (e.g. a wordmark) that only some brands define, without a hard import.
 import * as marks from './logos.js';
@@ -227,6 +228,12 @@ async function buildAll(): Promise<void> {
     fs.writeFileSync('dist/logo-mono.svg', monoSVG);
     fs.writeFileSync('dist/logo-white.svg', whiteSVG);
     fs.writeFileSync('dist/logo-light.svg', getLightSVG());
+    // The standalone animated mark is GENERATED from the constant. It was a
+    // hand-maintained second spelling — 5 paths and #fff against the constant's
+    // 7 and currentColor — i.e. two versions of one animation in one package,
+    // already drifted.
+    fs.writeFileSync('svg/hanzo-mark-animated.svg', ANIMATED_SVG);
+    fs.writeFileSync('dist/logo-animated.svg', ANIMATED_SVG);
     fs.writeFileSync('dist/logo-menubar.svg', menuBarSVG);
     fs.writeFileSync('dist/favicon.svg', faviconSVG);
     console.log('✓ Generated 6 SVG sources\n');

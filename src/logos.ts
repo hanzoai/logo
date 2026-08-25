@@ -29,8 +29,11 @@ export const MARK_BLOCKS = [
   'M66.7198 67V44.6369H44.5098V67H66.7198Z',
 ];
 
-/** The two accent slivers that give the H its shaded depth. */
-const MARK_SHADE = [
+/** The two accent slivers that give the H its shaded depth.
+ *  Exported alongside MARK_BLOCKS: a consumer that wants a different sliver ink
+ *  had to retype the paths, because only the pre-baked MARK_PATHS string was
+ *  reachable. */
+export const MARK_SHADE = [
   'M0 44.6369L22.21 46.8285V44.6369H0Z',
   'M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z',
 ];

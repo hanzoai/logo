@@ -1,4 +1,4 @@
-import { getMenuBarSVG } from './logos.js';
+import { getMenuBarSVG, MARK_BLOCKS, MARK_SHADE } from './logos.js';
 
 /**
  * Brand motion — the shared shell animation for the Hanzo mark, pure CSS:
@@ -39,4 +39,56 @@ export function getMotionHTML(wordmark = 'Hanzo'): string {
 /** The shell + its CSS as one self-contained HTML fragment. */
 export function getMotionMarkup(wordmark = 'Hanzo'): string {
   return `<style>${MOTION_CSS}</style>${getMotionHTML(wordmark)}`;
+}
+
+
+/**
+ * The loading state — the origami fold, made indeterminate.
+ *
+ * The package had brand motion and no way to say "still working": ANIMATED_SVG
+ * folds in ONCE and stops (`forwards`), and MOTION_CSS is an intro flip plus a
+ * breathe loop. Neither is a spinner, so surfaces invented their own — the only
+ * one in the fleet is ten hand-drawn raster frames.
+ *
+ * This is the same fold the mark already does, staggered across the five blocks
+ * and looping: each block turns in on its edge, holds while the others arrive,
+ * then turns out. It reads as motion rather than progress, which is what an
+ * indeterminate state should say.
+ *
+ * `currentColor`, so it is visible on any ground — the one-shot animation
+ * hardcodes `fill:#fff` and is invisible on the white the house asks for.
+ */
+export const LOADING_CSS = `.hanzo-loading{display:inline-block;line-height:0;color:inherit;width:1.25em;height:1.25em}
+.hanzo-loading svg{display:block;width:100%;height:100%}
+.hanzo-loading .hz-fold{fill:currentColor;transform-box:fill-box;transform-origin:left center;animation:hanzo-loading-fold 1.8s cubic-bezier(.16,1,.3,1) infinite}
+.hanzo-loading .hz-fold-1{animation-delay:.09s}
+.hanzo-loading .hz-fold-2{animation-delay:.18s}
+.hanzo-loading .hz-fold-3{animation-delay:.27s}
+.hanzo-loading .hz-fold-4{animation-delay:.36s}
+@keyframes hanzo-loading-fold{0%{opacity:0;transform:perspective(320px) rotateY(90deg)}20%,60%{opacity:1;transform:none}86%,100%{opacity:0;transform:perspective(320px) rotateY(-90deg)}}
+@media (prefers-reduced-motion:reduce){.hanzo-loading .hz-fold{animation:none;opacity:1;transform:none}}`;
+
+/**
+ * The looping mark on its own. Pair with LOADING_CSS, or use
+ * getLoadingMarkup() for both at once.
+ */
+export function getLoadingSVG(): string {
+  const shadeAt: Record<number, string> = { 0: MARK_SHADE[0], 3: MARK_SHADE[1] };
+  const parts = MARK_BLOCKS.map((d, i) => {
+    const block = `<path class="hz-fold hz-fold-${i}" d="${d}"/>`;
+    const sliver = shadeAt[i]
+      ? `<path class="hz-fold hz-fold-${i}" opacity=".55" d="${shadeAt[i]}"/>`
+      : '';
+    return block + sliver;
+  });
+  return (
+    `<svg role="img" aria-label="Loading" viewBox="0 0 67 67" xmlns="http://www.w3.org/2000/svg">` +
+    parts.join('') +
+    `</svg>`
+  );
+}
+
+/** The loading mark and its CSS as one self-contained fragment. */
+export function getLoadingMarkup(): string {
+  return `<style>${LOADING_CSS}</style><span class="hanzo-loading">${getLoadingSVG()}</span>`;
 }
