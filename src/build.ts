@@ -187,11 +187,11 @@ function generateHero(whiteMark: string): void {
     const hero = `<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="${esc(brand.name)} brand assets">
   <rect width="1280" height="640" fill="#0A0A0A"/>
   ${mark}
-  <text x="440" y="316" font-family="Inter,system-ui,-apple-system,sans-serif" font-size="94" font-weight="800" letter-spacing="-3" fill="#ffffff">${esc(brand.name)}</text>
-  <text x="443" y="366" font-family="Inter,system-ui,sans-serif" font-size="27" fill="#ffffff" opacity=".62">${esc(brand.tagline)}</text>
+  <text x="440" y="316" font-family="Zen,system-ui,-apple-system,sans-serif" font-size="94" font-weight="800" letter-spacing="-3" fill="#ffffff">${esc(brand.name)}</text>
+  <text x="443" y="366" font-family="Zen,system-ui,sans-serif" font-size="27" fill="#ffffff" opacity=".62">${esc(brand.tagline)}</text>
   <rect x="443" y="390" width="710" height="2" rx="1" fill="#ffffff" opacity=".85"/>
-  <text x="443" y="440" font-family="Inter,system-ui,sans-serif" font-size="23" font-weight="600" fill="#ffffff" opacity=".45">github.com/${esc(brand.github)}</text>
-  <text x="1160" y="440" text-anchor="end" font-family="Inter,system-ui,sans-serif" font-size="23" font-weight="600" fill="#ffffff" opacity=".45">${esc(brand.domain)}</text>
+  <text x="443" y="440" font-family="Zen,system-ui,sans-serif" font-size="23" font-weight="600" fill="#ffffff" opacity=".45">github.com/${esc(brand.github)}</text>
+  <text x="1160" y="440" text-anchor="end" font-family="Zen,system-ui,sans-serif" font-size="23" font-weight="600" fill="#ffffff" opacity=".45">${esc(brand.domain)}</text>
 </svg>
 `;
     fs.mkdirSync('.github', { recursive: true });
