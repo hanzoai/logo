@@ -54,6 +54,9 @@ concurrency:
 
 jobs:
   site:
+    permissions:
+      contents: read
+      id-token: write
     # NOT ubuntu-latest. This file lives in .hanzo/workflows, which GitHub never
     # reads — git.hanzo.ai is the only thing that can run it, and its fleet
     # advertises linux-amd64. An unmatched label is not an error here,
