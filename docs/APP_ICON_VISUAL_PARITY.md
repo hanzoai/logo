@@ -48,3 +48,13 @@ The two horizontal visor openings are each 156 × 84 units. Their inside gap is
 exactly 156 units, preserving equal one-eye spacing on the 1024px source canvas.
 
 The selected Team SVG also removes the unused `feDropShadow` definition entirely; depth comes only from two explicit faceted shade paths, never a blurred cast shadow.
+
+
+## Font-authoritative Team hash
+Selected Team glyph uses the **actual @hanzo/font Zen-Italic numbersign** (`#`) outlines
+from `hanzoai/font/sources/Zen-Italic.glyphspackage/glyphs/numbersign.glyph`.
+The four native contour paths are interpolated for `wght=700` from the font's
+400/900 masters, then scaled **uniformly** at 0.9 with a y-axis flip to SVG coordinates.
+No manually reconstructed strokes, added origami notches, or cast shadow.
+The earlier `origami-hash` remains available as an alternate candidate.
+Canonical seven-path Hanzo H remains unchanged and separate in the lower-right.

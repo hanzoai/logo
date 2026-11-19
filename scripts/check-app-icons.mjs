@@ -63,20 +63,14 @@ const four = getHanzoTeamOptionSVG('four-apps');
 assert.equal((four.match(/width="250" height="250"/g) || []).length, 4, 'Four-app Team option must contain four equal squares');
 assert.ok(four.includes('x="243" y="215"') && four.includes('x="531" y="503"'), 'Four-app launcher grid must remain centered');
 
-// Team uses an italic hash: two slanted stems and two full-width crossbars.
+// The selected Team # is derived from the real Zen-Italic numbersign masters (wght 700).
 const team = getHanzoAppIconSVG('team');
-for(const d of ['M433 265H519L425 758H339Z','M670 265H756L662 758H576Z','M182 407L842 389V475L182 493Z','M182 558L842 540V626L182 644Z'])
-  assert.ok(team.includes('d="'+d+'"'),'Team italic # lost a stroke');
-assert.ok(!team.includes('cx="281" cy="407"'), 'Team must not regress to people silhouettes');
-for(const name of ['italic-hash','sharp-hash','angular-hash'])
-  assert.ok(getHanzoTeamOptionSVG(name).includes('translate(745 760) scale(2.31)'),name+': canonical H is missing');
-
-const origami = getHanzoAppIconSVG('team');
-assert.equal((origami.match(/fill="#b9b9b9"/g) || []).length, 1, 'Team must have exactly one group of facet ink');
-for (const d of ['M625 479L713 477L705 499L630 500Z','M370 552L454 550L466 532L380 534Z']) {
-  assert.ok(origami.includes('d="' + d + '"'), 'Missing origami fold facet ' + d);
+for (const d of ["M413.2 0L569.8 710L432.4 710L276.4 0Z","M525.6 163.4L552 282.6L25.8 282.6L-0.6 163.4Z","M173.8 0L330.4 710L193 710L37 0Z","M580.6 420.8L606 540L80.4 540L55 420.8Z"]) {
+  assert.ok(team.includes('d="' + d + '"'), 'Missing @hanzo/font numbersign outline');
 }
-assert.ok(!origami.includes('filter="url(#hanzo-team-glyphshadow)"'), 'Team glyph must have no cast shadow');
-assert.ok(!origami.includes('feDropShadow'), 'Team SVG must not even define a glyph drop shadow');
-assert.equal(origami, getHanzoTeamOptionSVG('origami-hash').replaceAll('team-origami-hash','team'), 'Selected Team glyph must equal origami candidate');
-console.log('Team origami hash: square-ended equal-width crossbars, two fold facets, no cast shadow');
+assert.equal((team.match(/<path d="M[0-9.-]+ [0-9.-]+L/g) || []).length >= 4, true, 'Team glyph should have four font contours');
+assert.ok(team.includes('translate(239 792) scale(0.9 -0.9)'), 'Team font glyph transform changed');
+assert.ok(!team.includes('feDropShadow'), 'Team must not contain a cast shadow');
+assert.ok(!team.includes('fill="#b9b9b9"'), 'Do not add hand-drawn origami facets to the actual font glyph');
+assert.equal(team, getHanzoTeamOptionSVG('zen-italic-hash').replaceAll('team-zen-italic-hash','team'), 'Font candidate and selected Team should match');
+console.log('Hanzo Team: @hanzo/font wght=700 italic numbersign contours, no shadow');
