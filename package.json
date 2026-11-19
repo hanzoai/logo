@@ -1,6 +1,6 @@
 {
   "name": "@hanzo/logo",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "packageManager": "pnpm@11.17.0",
   "description": "Official Hanzo logo package with React components and utilities",
   "type": "module",
@@ -48,7 +48,13 @@
       "import": "./dist/wordmarks.js",
       "require": "./dist/wordmarks.js"
     },
-    "./wordmark/*": "./dist/wordmarks/*"
+    "./wordmark/*": "./dist/wordmarks/*",
+    "./apps": {
+      "types": "./dist/app-icons.d.ts",
+      "import": "./dist/app-icons.js",
+      "require": "./dist/app-icons.js"
+    },
+    "./apps/*": "./dist/apps/*"
   },
   "scripts": {
     "build": "pnpm clean && pnpm compile && pnpm build:cli && pnpm generate",
@@ -61,7 +67,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "format": "prettier --write 'src/**/*.{ts,tsx,json}'",
     "typecheck": "node_modules/tsgo/bin/tsc --noEmit --incremental false",
-    "test": "pnpm typecheck && pnpm build",
+    "test": "pnpm typecheck && pnpm build && node scripts/check-app-icons.mjs",
     "watch": "tsc --watch",
     "prepublishOnly": "pnpm build"
   },
@@ -101,7 +107,7 @@
   },
   "brand": {
     "name": "Hanzo",
-    "tagline": "Official brand marks \u2014 SVG, PNG, ICO, favicons & app icons.",
+    "tagline": "Official brand marks — SVG, PNG, ICO, favicons & app icons.",
     "github": "hanzoai",
     "domain": "hanzo.ai"
   }

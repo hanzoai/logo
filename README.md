@@ -54,3 +54,17 @@ img.src = getAnimatedDataUrl();    // load animation only (fine in <img>)
 <!-- Raw SVG over CDN — load animation in <img>; inline the file for hover/press -->
 <img src="https://unpkg.com/@hanzo/logo/svg/hanzo-mark-animated.svg" width="64" alt="" />
 ```
+
+## Six desktop app Dock icons
+
+The canonical seven-path H from MARK_BLOCKS and MARK_SHADE is reused exactly.
+Hanzo App is the unbadged H. The other five have centered foreground artwork
+and a complete borderless H in the lower-right corner.
+
+Names: app, bot, command (controller/launcher), dev, ide, team.
+
+Import getHanzoAppIconSVG or getHanzoAppIconDataUrl from @hanzo/logo/apps.
+Use the HanzoAppIcon React component from @hanzo/logo/react.
+Source SVGs: svg/apps/hanzo-app.svg through svg/apps/hanzo-team.svg.
+Published SVGs: @hanzo/logo/apps/hanzo-bot.svg (and the other names).
+Build generates 64, 128, 256, 512, and 1024px PNGs in dist/apps.

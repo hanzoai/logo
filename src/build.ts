@@ -18,6 +18,7 @@ import { WORDMARK_NAMES, getWordmarkSVG } from './wordmarks.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
 // (e.g. a wordmark) that only some brands define, without a hard import.
 import * as marks from './logos.js';
+import { HANZO_APP_IDS, getHanzoAppIconSVG } from './app-icons.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -373,6 +374,16 @@ async function buildAll(): Promise<void> {
             addBackground: true,
             bgColor: '#000000'
         });
+    }
+
+    // === APP DOCK ICONS ===
+    fs.mkdirSync('dist/apps', { recursive: true });
+    for (const app of HANZO_APP_IDS) {
+      const svg = getHanzoAppIconSVG(app);
+      fs.writeFileSync('dist/apps/hanzo-' + app + '.svg', svg);
+      for (const size of [64,128,256,512,1024]) {
+        await generateIcon(svg, 'dist/apps/hanzo-' + app + '-' + size + '.png', size);
+      }
     }
 
     // === MENU BAR ICONS ===
