@@ -33,7 +33,7 @@ const mark = (x: number, y: number, scale: number, withShadow = true): string =>
 
 /** Construct an isolated SVG with common shell and scoped IDs. */
 function renderDockSvg(identity: string, graphic: string): string {
-  const cleanDefs = identity === 'team' || identity === 'team-origami-hash'
+  const cleanDefs = identity === 'team' || identity === 'team-origami-hash' || identity === 'team-zen-italic-hash'
     ? DEFS.replace(/<filter id="glyphshadow"[^>]*>[\s\S]*?<\/filter>/, '')
     : DEFS;
   let out = '<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Hanzo ' + identity + ' Dock icon">\n' +
@@ -53,7 +53,7 @@ export function getHanzoAppIconSVG(app: HanzoAppId): string {
 
 /** Standalone experimental Team variants, sharing the tile and canonical seven-path H. */
 export function getHanzoTeamOptionSVG(option: HanzoTeamOption): string {
-  return renderDockSvg('team-' + option, TEAM_OPTION_GLYPHS[option] + mark(745, 760, 2.31, option !== 'origami-hash'));
+  return renderDockSvg('team-' + option, TEAM_OPTION_GLYPHS[option] + mark(745, 760, 2.31, option !== 'origami-hash' && option !== 'zen-italic-hash'));
 }
 
 export function getHanzoAppIconDataUrl(app: HanzoAppId): string {
