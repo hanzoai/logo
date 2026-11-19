@@ -1,4 +1,7 @@
 import React from 'react';
+import { getHanzoAppIconDataUrl } from './app-icons.js';
+import type { HanzoAppId } from './app-icons.js';
+
 import { getColorSVG, getMonoSVG, getWhiteSVG,
   getLightSVG, getFaviconSVG, getAnimatedSVG, getMenuBarSVG } from './logos.js';
 import { MOTION_CSS } from './motion.js';
@@ -122,3 +125,8 @@ export const HanzoFavicon: React.FC = () => {
     </>
   );
 };
+/** Desktop Dock icon for one Hanzo app. The <img> isolates per-SVG gradient IDs. */
+export interface HanzoAppIconProps { app: HanzoAppId; size?: number | string; className?: string; style?: React.CSSProperties; alt?: string; }
+export const HanzoAppIcon: React.FC<HanzoAppIconProps> = ({ app, size = 128, className, style, alt }) => (
+  <img src={getHanzoAppIconDataUrl(app)} width={size} height={size} className={className} style={style} alt={alt ?? 'Hanzo ' + app} />
+);
