@@ -62,3 +62,11 @@ console.log('Team candidates and Bot eye-spacing geometry verified');
 const four = getHanzoTeamOptionSVG('four-apps');
 assert.equal((four.match(/width="250" height="250"/g) || []).length, 4, 'Four-app Team option must contain four equal squares');
 assert.ok(four.includes('x="243" y="215"') && four.includes('x="531" y="503"'), 'Four-app launcher grid must remain centered');
+
+// Team uses an italic hash: two slanted stems and two full-width crossbars.
+const team = getHanzoAppIconSVG('team');
+for(const d of ['M445 268L353 685','M671 268L579 685','M220 416L804 403','M220 564L804 551'])
+  assert.ok(team.includes('d="'+d+'"'),'Team italic # lost a stroke');
+assert.ok(!team.includes('cx="281" cy="407"'), 'Team must not regress to people silhouettes');
+for(const name of ['italic-hash','sharp-hash','angular-hash'])
+  assert.ok(getHanzoTeamOptionSVG(name).includes('translate(745 760) scale(2.31)'),name+': canonical H is missing');

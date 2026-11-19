@@ -14,7 +14,7 @@ The reference is a visual contract; all icon geometry and shell dimensions are s
 - Command: smoothly curved controller traced from the reference silhouette.
 - Dev: equal, heavier chevrons, symmetrically laid out.
 - IDE: thicker, visible frame, two text strokes, three header dots.
-- Team: symmetric side heads with broader connected central body and curved shoulders.
+- Team: centered italic # / hashtag, with two slanted uprights and two near-horizontal crossbars; distinct from Dev's chevrons.
 - Every non-App tile has the unframed seven-path H in the lower-right corner;
   do not simplify it to five paths, omit its lower-right leg or add a badge border.
 
@@ -29,11 +29,14 @@ SVG geometry is intentionally vectorized and approximates the generative source.
 The lighting/glow is not byte-for-byte identical to the raster reference.
 
 ## Team identity explorations (not selected)
-Four previewable exported Team SVG variants share the same shell and complete H:
+Seven previewable exported Team SVG variants share the same shell and complete H:
 - `human-ai`: large human silhouette + smaller agent visor; two co-workers, visually distinct
 - `connected-pair`: person + agent integrated into one continuous team base
 - `nine-apps`: dense 3×3 launcher grid for the connected business suite
 - `four-apps`: simpler 2×2 suite launcher with bigger, equal-weight tiles; clearer at small Dock sizes
+- `italic-hash`: selected as default Team icon; round, bold slanted #
+- `sharp-hash`: slanted # with more angled crossbars
+- `angular-hash`: square-ended slanted #
 
 `getHanzoTeamOptionSVG(option)` from `@hanzo/logo/apps` provides the exact source.
 The build writes candidate SVGs/PNGs to `dist/apps/candidates` rather than replacing the
