@@ -65,8 +65,17 @@ assert.ok(four.includes('x="243" y="215"') && four.includes('x="531" y="503"'), 
 
 // Team uses an italic hash: two slanted stems and two full-width crossbars.
 const team = getHanzoAppIconSVG('team');
-for(const d of ['M445 268L353 685','M671 268L579 685','M220 416L804 403','M220 564L804 551'])
+for(const d of ['M433 265H519L425 758H339Z','M670 265H756L662 758H576Z','M182 407L842 389V475L182 493Z','M182 558L842 540V626L182 644Z'])
   assert.ok(team.includes('d="'+d+'"'),'Team italic # lost a stroke');
 assert.ok(!team.includes('cx="281" cy="407"'), 'Team must not regress to people silhouettes');
 for(const name of ['italic-hash','sharp-hash','angular-hash'])
   assert.ok(getHanzoTeamOptionSVG(name).includes('translate(745 760) scale(2.31)'),name+': canonical H is missing');
+
+const origami = getHanzoAppIconSVG('team');
+assert.equal((origami.match(/fill="#b9b9b9"/g) || []).length, 1, 'Team must have exactly one group of facet ink');
+for (const d of ['M625 479L713 477L705 499L630 500Z','M370 552L454 550L466 532L380 534Z']) {
+  assert.ok(origami.includes('d="' + d + '"'), 'Missing origami fold facet ' + d);
+}
+assert.ok(!origami.includes('filter="url(#hanzo-team-glyphshadow)"'), 'Team glyph must have no cast shadow');
+assert.equal(origami, getHanzoTeamOptionSVG('origami-hash').replaceAll('team-origami-hash','team'), 'Selected Team glyph must equal origami candidate');
+console.log('Team origami hash: square-ended equal-width crossbars, two fold facets, no cast shadow');

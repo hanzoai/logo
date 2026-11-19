@@ -5,5 +5,15 @@
 <path d="M239 14 C114 14 14 114 14 238 M239 14 H785 C909 14 1010 115 1010 238" fill="none" stroke="#fff" stroke-width="18" opacity=".28" filter="url(#hanzo-team-edgeglow)"/>
 <path d="M240 13 H784 C912 13 1010 111 1010 241" fill="none" stroke="#fff" stroke-width="6" opacity=".29"/>
 <rect x="11" y="11" width="1002" height="1002" rx="229" fill="none" stroke="url(#hanzo-team-outline)" stroke-width="4"/>
-<g filter="url(#hanzo-team-glyphshadow)" fill="none" stroke="url(#hanzo-team-metal)" stroke-width="92" stroke-linecap="round" stroke-linejoin="round"><path d="M445 268L353 685"/><path d="M671 268L579 685"/><path d="M220 416L804 403"/><path d="M220 564L804 551"/></g><g transform="translate(745 760) scale(2.31)" filter="url(#hanzo-team-glyphshadow)"><path d="M22.21 67V44.6369H0V67H22.21Z" fill="url(#hanzo-team-metal)"/><path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="url(#hanzo-team-metal)"/><path d="M22.21 0H0V22.3184H22.21V0Z" fill="url(#hanzo-team-metal)"/><path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="url(#hanzo-team-metal)"/><path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="url(#hanzo-team-metal)"/><path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="#dddddd" opacity=".48"/><path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="#dddddd" opacity=".48"/></g>
+<g fill="url(#hanzo-team-metal)">
+  <path d="M433 265H519L425 758H339Z"/>
+  <path d="M670 265H756L662 758H576Z"/>
+  <path d="M182 407L842 389V475L182 493Z"/>
+  <path d="M182 558L842 540V626L182 644Z"/>
+</g>
+<!-- Two faceted paper-fold slivers, inspired by MARK_SHADE; no blur or drop shadow -->
+<g fill="#b9b9b9">
+  <path d="M625 479L713 477L705 499L630 500Z"/>
+  <path d="M370 552L454 550L466 532L380 534Z"/>
+</g><g transform="translate(745 760) scale(2.31)"><path d="M22.21 67V44.6369H0V67H22.21Z" fill="url(#hanzo-team-metal)"/><path d="M66.7038 22.3184H22.2534L0.0878906 44.6367H44.4634L66.7038 22.3184Z" fill="url(#hanzo-team-metal)"/><path d="M22.21 0H0V22.3184H22.21V0Z" fill="url(#hanzo-team-metal)"/><path d="M66.7198 0H44.5098V22.3184H66.7198V0Z" fill="url(#hanzo-team-metal)"/><path d="M66.7198 67V44.6369H44.5098V67H66.7198Z" fill="url(#hanzo-team-metal)"/><path d="M0 44.6369L22.21 46.8285V44.6369H0Z" fill="#dddddd" opacity=".48"/><path d="M66.6753 22.3185L44.5098 20.0822V22.3185H66.6753Z" fill="#dddddd" opacity=".48"/></g>
 </svg>
