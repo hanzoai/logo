@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import sharp from 'sharp';
-import { HANZO_APP_IDS, getHanzoAppIconSVG } from '../dist/app-icons.js';
+import { HANZO_APP_IDS, getHanzoAppIconSVG, HANZO_TEAM_OPTIONS, getHanzoTeamOptionSVG } from '../dist/app-icons.js';
 import { MARK_BLOCKS, MARK_SHADE } from '../dist/logos.js';
 
 for (const app of HANZO_APP_IDS) {
@@ -43,3 +43,18 @@ for (const app of HANZO_APP_IDS) {
   }
 }
 console.log('Hanzo app icons: canonical H, source equality, visual heft/centering and 32-1024px raster checks pass');
+
+for (const option of HANZO_TEAM_OPTIONS) {
+  const icon = getHanzoTeamOptionSVG(option);
+  assert.equal(icon, readFileSync(new URL('../svg/apps/candidates/hanzo-team-'+option+'.svg', import.meta.url),'utf8'), option+': Team candidate SVG drift');
+  for (const d of [...MARK_BLOCKS, ...MARK_SHADE]) assert.ok(icon.includes('d="' + d + '"'), option+': H path missing');
+  for (const size of [32,64,128,256,512,1024]) {
+    const {info} = await sharp(Buffer.from(icon)).resize(size,size).png().toBuffer({resolveWithObject:true});
+    assert.equal(info.width,size);
+    assert.equal(info.height,size);
+  }
+}
+const bot = getHanzoAppIconSVG('bot');
+assert.ok(bot.includes('x="278" y="454" width="156"'), 'Bot left eye dimensions drifted');
+assert.ok(bot.includes('x="590" y="454" width="156"'), 'Bot right eye must be one eye width away');
+console.log('Team candidates and Bot eye-spacing geometry verified');
