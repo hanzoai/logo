@@ -28,8 +28,11 @@ const mark = (x: number, y: number, scale: number, withShadow = true): string =>
 
 /** Construct an isolated SVG with common shell and scoped IDs. */
 function renderDockSvg(identity: string, graphic: string): string {
+  const cleanDefs = identity === 'team' || identity === 'team-origami-hash'
+    ? DEFS.replace(/<filter id="glyphshadow"[^>]*>[\s\S]*?<\/filter>/, '')
+    : DEFS;
   let out = '<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Hanzo ' + identity + ' Dock icon">\n' +
-    DEFS + '\n' + BG + '\n' + SHINE + '\n' + RIM + '\n' + TOP_PATH + '\n' + EDGE + '\n' + graphic + '\n</svg>';
+    cleanDefs + '\n' + BG + '\n' + SHINE + '\n' + RIM + '\n' + TOP_PATH + '\n' + EDGE + '\n' + graphic + '\n</svg>';
   for (const id of SCOPED_IDS) {
     out = out.split('id="' + id + '"').join('id="hanzo-' + identity + '-' + id + '"')
              .split('url(#' + id + ')').join('url(#hanzo-' + identity + '-' + id + ')');

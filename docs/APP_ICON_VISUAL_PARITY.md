@@ -46,3 +46,5 @@ existing `hanzo-team.svg`, pending design selection.
 ## Bot eye spacing
 The two horizontal visor openings are each 156 × 84 units. Their inside gap is
 exactly 156 units, preserving equal one-eye spacing on the 1024px source canvas.
+
+The selected Team SVG also removes the unused `feDropShadow` definition entirely; depth comes only from two explicit faceted shade paths, never a blurred cast shadow.

@@ -77,5 +77,6 @@ for (const d of ['M625 479L713 477L705 499L630 500Z','M370 552L454 550L466 532L3
   assert.ok(origami.includes('d="' + d + '"'), 'Missing origami fold facet ' + d);
 }
 assert.ok(!origami.includes('filter="url(#hanzo-team-glyphshadow)"'), 'Team glyph must have no cast shadow');
+assert.ok(!origami.includes('feDropShadow'), 'Team SVG must not even define a glyph drop shadow');
 assert.equal(origami, getHanzoTeamOptionSVG('origami-hash').replaceAll('team-origami-hash','team'), 'Selected Team glyph must equal origami candidate');
 console.log('Team origami hash: square-ended equal-width crossbars, two fold facets, no cast shadow');
