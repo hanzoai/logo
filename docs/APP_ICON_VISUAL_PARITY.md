@@ -1,13 +1,29 @@
-# Hanzo Dock SVG visual parity
+# Hanzo desktop Dock icon visual parity
 
-Reference: user-approved November 19, 2026 glossy six-icon mockup.
-Method: hanzoai/dev .agents/skills/ui (visual parity by measurement).
+Reference: user-approved 2026-11-19 six-icon glossy monochrome macOS mockup.
+Method: Hanzo UI-port skill from `hanzoai/dev/.agents/skills/ui/SKILL.md`.
+The reference is a visual contract; all icon geometry and shell dimensions are shared.
 
-- Shared 1024x1024 macOS tile geometry, monochrome chrome, metallic glyphs and optical centering.
-- App is only the full seven-path canonical H.
-- Bot capsule has no antenna; Command has a larger controller; Dev chevrons are expanded; IDE and Team graphics are centered.
-- Other five apps have the *complete* borderless seven-path H in the lower-right.
-- Source SVGs come from getHanzoAppIconSVG, preserving a single implementation.
-- pnpm test checks exact source parity, all seven H paths, badge policy and 32/64/128/1024 Sharp rendering.
+## Design contract
 
-These vectors approximate the image-generated mockup; lighting/reflections are not pixel-identical.
+- 1024×1024 canvas, 1008×1008 rounded tile; all icons use the same upper rim,
+  gloss, and monochrome silver-metal ink.
+- Primary glyphs are centered around x=512, independent of the brand mini-H.
+- App: only the complete seven-path H (five body blocks and two shade slivers).
+- Bot: wide visor with two properly proportioned, aligned eye slots; no antenna.
+- Command: smoothly curved controller traced from the reference silhouette.
+- Dev: equal, heavier chevrons, symmetrically laid out.
+- IDE: thicker, visible frame, two text strokes, three header dots.
+- Team: symmetric side heads with broader connected central body and curved shoulders.
+- Every non-App tile has the unframed seven-path H in the lower-right corner;
+  do not simplify it to five paths, omit its lower-right leg or add a badge border.
+
+## Verification
+
+`pnpm test` checks: canonical paths, exact generator ↔ checked-in SVG parity,
+SVG filter/gradient namespacing, 32/64/128/256/512/1024 PNG rendering,
+main glyph weight and centered footprint. Re-render and visually compare
+all six against the reference before merging.
+
+SVG geometry is intentionally vectorized and approximates the generative source.
+The lighting/glow is not byte-for-byte identical to the raster reference.
