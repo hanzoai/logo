@@ -16,4 +16,6 @@ test:
       set -e
       corepack enable
       pnpm install --frozen-lockfile
-      pnpm test
+      pnpm typecheck
+      pnpm build
+      node scripts/check-app-icons.mjs
