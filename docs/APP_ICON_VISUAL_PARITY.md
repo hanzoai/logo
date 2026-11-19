@@ -29,10 +29,11 @@ SVG geometry is intentionally vectorized and approximates the generative source.
 The lighting/glow is not byte-for-byte identical to the raster reference.
 
 ## Team identity explorations (not selected)
-Three previewable exported Team SVG variants share the same shell and complete H:
+Four previewable exported Team SVG variants share the same shell and complete H:
 - `human-ai`: large human silhouette + smaller agent visor; two co-workers, visually distinct
 - `connected-pair`: person + agent integrated into one continuous team base
-- `nine-apps`: launcher grid for the connected business suite
+- `nine-apps`: dense 3×3 launcher grid for the connected business suite
+- `four-apps`: simpler 2×2 suite launcher with bigger, equal-weight tiles; clearer at small Dock sizes
 
 `getHanzoTeamOptionSVG(option)` from `@hanzo/logo/apps` provides the exact source.
 The build writes candidate SVGs/PNGs to `dist/apps/candidates` rather than replacing the

@@ -58,3 +58,7 @@ const bot = getHanzoAppIconSVG('bot');
 assert.ok(bot.includes('x="278" y="454" width="156"'), 'Bot left eye dimensions drifted');
 assert.ok(bot.includes('x="590" y="454" width="156"'), 'Bot right eye must be one eye width away');
 console.log('Team candidates and Bot eye-spacing geometry verified');
+
+const four = getHanzoTeamOptionSVG('four-apps');
+assert.equal((four.match(/width="250" height="250"/g) || []).length, 4, 'Four-app Team option must contain four equal squares');
+assert.ok(four.includes('x="243" y="215"') && four.includes('x="531" y="503"'), 'Four-app launcher grid must remain centered');
