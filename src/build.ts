@@ -18,7 +18,7 @@ import { WORDMARK_NAMES, getWordmarkSVG } from './wordmarks.js';
 // Namespace view of the same module — lets the build pick up OPTIONAL marks
 // (e.g. a wordmark) that only some brands define, without a hard import.
 import * as marks from './logos.js';
-import { HANZO_APP_IDS, getHanzoAppIconSVG } from './app-icons.js';
+import { HANZO_APP_IDS, getHanzoAppIconSVG, HANZO_TEAM_OPTIONS, getHanzoTeamOptionSVG } from './app-icons.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -383,6 +383,16 @@ async function buildAll(): Promise<void> {
       fs.writeFileSync('dist/apps/hanzo-' + app + '.svg', svg);
       for (const size of [64,128,256,512,1024]) {
         await generateIcon(svg, 'dist/apps/hanzo-' + app + '-' + size + '.png', size);
+      }
+    }
+
+    // === TEAM OPTIONS (previews, NOT a change to the production Team icon) ===
+    fs.mkdirSync('dist/apps/candidates', { recursive: true });
+    for (const option of HANZO_TEAM_OPTIONS) {
+      const svg = getHanzoTeamOptionSVG(option);
+      fs.writeFileSync('dist/apps/candidates/hanzo-team-' + option + '.svg', svg);
+      for (const size of [32, 64, 128, 256, 512, 1024]) {
+        await generateIcon(svg, 'dist/apps/candidates/hanzo-team-' + option + '-' + size + '.png', size);
       }
     }
 
